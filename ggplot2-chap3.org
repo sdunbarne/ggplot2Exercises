@@ -1,0 +1,60 @@
+#+PROPERTY: header-args :session *R* :results both 
+* Chapter 3  -- Individual geoms
+
+#+BEGIN_SRC R
+library(ggplot2)
+options(crayon.enabled = FALSE) # see https://github.com/tidyverse/tibble/issues/395
+#+END_SRC
+
+#+RESULTS:
+ 
+
+**  Section 3.1.1 Exercises
+1) [@1]    What geoms would you use to draw each of the following named plots?
+   - Scatterplot -- ~geom_point()~
+   - Line chart -- ~geom_line()~
+   - Histogram -- ~geom_histogram()~
+   - Bar chart -- ~geom_bar()~
+   - Pie chart -- The function ~coord_polar()~ is used to produce a
+  pie chart, which is just a stacked bar chart in polar coordinates.
+
+An example would be
+#+begin_src R :output code
+ggplot(df, aes(x="", y=value, fill=group))+
+geom_bar(width = 1, stat = "identity")
++ coord_polar("y", start=0)
+#+end_src
+
+
+2) [@2]  What’s the difference between ~geom_path()~ and ~geom_polygon()~?
+   What’s the difference between ~geom_path()~ and ~geom_line()~?
+
+Polygons are very similar to paths (as drawn by ‘~geom_path()~’) except
+that the start and end points are connected and the inside is coloured
+by ‘fill’. The ‘group’ aesthetic determines which cases are connected
+together into a polygon. From R 3.6 and onwards it is possible to draw
+polygons with holes by providing a subgroup aesthetic that
+differentiates the outer ring points from those describing holes in
+the polygon.
+
+3) [@3]   What low-level geoms are used to draw ~geom_smooth()~? What about
+   ~geom_boxplot()~ and ~geom_violin()~?
+
+Probably each uses ~geom_line()~ but I don't find documentation of this.
+I have to look into the function code to find out.
+
+Scanning the code for ~geom_violin()~, at 
+https://github.com/tidyverse/ggplot2/blob/master/R/geom-violin.r
+I find some references to drawing paths and polygons, but not with the
+higher level geoms, more like more primitive drawing tools.
+
+Looking closer the source, at line 177, I find ~draw_panel()~.
+Following up, in the vignette "Extending ggplot2", 
+https://cran.r-project.org/web/packages/ggplot2/vignettes/extending-ggplot2.html
+I find
+#+begin_quote
+~draw_panel()~ is where the magic happens. This function takes three
+arguments and returns a grid grob. It is called once for each
+panel. 
+#+end_quote
+A "grob" is a grid graphical object in R.

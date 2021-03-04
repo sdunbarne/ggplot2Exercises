@@ -1,0 +1,83 @@
+#+PROPERTY: header-args :session *R* :results both
+
+#+begin_src R :session *R*  :results output
+library(ggplot2)
+options(crayon.enabled = FALSE) # see https://github.com/tidyverse/tibble/issues/395
+#+end_src
+
+#+RESULTS:
+
+* Chapter 17 -- Faceting
+  
+** 17.7 Exercises
+
+1) [@1] Diamonds: display the distribution of price conditional on cut
+   and carat. Try faceting by cut and grouping by carat. Try faceting
+   by carat and grouping by cut. Which do you prefer?
+
+#+begin_src R :session *R* :exports both :results graphics file :file graphics/ggplot2-chap17.7.1.1png
+  ggplot(diamonds, aes(carat, price)) +
+    geom_point() +
+    facet_wrap( ~cut)
+#+end_src
+
+#+RESULTS:
+
+#+begin_src R :session *R* :exports both :results graphics file :file graphics/ggplot2-chap17.7.1.2.png
+  ggplot(diamonds, aes(cut, price )) +
+    geom_point() +
+    facet_wrap( ~carat)
+#+end_src
+
+
+ Obviously, the first, conditional on cut is far preferable.  There are
+ too many values of carat to make a sensible facetplot.
+
+    #+RESULTS:
+
+2) [@2] Diamonds: compare the relationship between price and carat for
+    each colour. What makes it hard to compare the groups? Is grouping
+    better or faceting? If you use faceting, what annotation might
+    you add to make it easier to see the differences between panels?
+
+ #+begin_src R :session *R* :exports both :results graphics file :file graphics/ggplot2-chap17.7.2.png
+   ggplot(diamonds, aes(carat, price)) +
+     geom_point() +
+     geom_smooth(color="red") +
+     facet_wrap( ~color)
+ #+end_src
+
+ Based on the partial results from the smoothing, it might help to add
+ the exponential rate for price increase.
+
+ #+RESULTS:
+
+3) [@3] Why is ~facet_wrap()~ generally more useful than ~facet_grid()~?
+
+    ~facet_wrap()~ would seem to work well for categorical variables,
+    which are common, while ~facet_grid()~ seems to be a appropriate for
+    a variable with some kind of regular increase or decrease or
+    relationship among values.
+   
+4) [@4] Recreate the following plot. It facets mpg2 by class, overlaying
+    a smooth curve fit to the full dataset.
+
+#+begin_quote
+  ~geom_smooth()~ using method = 'loess' and formula 'y ~ x'
+#+end_quote
+
+
+#+begin_src R :session *R* :exports both :results graphics file :file graphics/ggplot2-chap17.7.3.png
+  mpg2 <- subset(mpg, cyl != 5 & drv %in% c("4", "f") & class != "2seater")
+  ggplot(mpg2, aes(displ, hwy)) +
+    geom_point() +
+    geom_smooth(se=FALSE) +
+    facet_wrap( ~class)
+#+end_src
+
+#+RESULTS:
+
+     I don't get the smoothed curve to extend over the range of the
+    displacement, and my smoothed curves seem to a lot of variation,
+    not very smoothed.  Must need to tweak a parameter.
+   

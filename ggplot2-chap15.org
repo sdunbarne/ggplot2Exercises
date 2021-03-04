@@ -1,0 +1,99 @@
+#+begin_comment
+#+PROPERTY: header-args :session *R* :results both
+#+end_comment
+
+* Chapter 15 -- Scales and guides
+  
+#+begin_src R :session *R*
+library(ggplot2)
+options(crayon.enabled = FALSE) # see https://github.com/tidyverse/tibble/issues/395
+#+end_src
+
+#+RESULTS:
+
+** 15.1.1  Exercises
+
+1) [@1]Simplify the following plot specifications to make them easier to understand.
+
+    a.
+ #+begin_src R :exports code
+  ggplot(mpg, aes(displ)) + 
+   scale_y_continuous("Highway mpg") + 
+   scale_x_continuous() +
+   geom_point(aes(y = hwy))
+ #+end_src
+
+ #+begin_src R :session *R* :session *R* :exports both :results graphics file :file graphics/ggplot2-chap15.1.1.1a.png
+   ggplot(mpg, aes(displ, hwy)) +
+     geom_point() +
+     scale_y_continuous("Highway mpg")
+   #+end_src
+
+   #+RESULTS:
+
+   b.
+ #+begin_src R :exports code
+   ggplot(mpg, aes(y = displ, x = class)) + 
+   scale_y_continuous("Displacement (l)") + 
+   scale_x_discrete("Car type") +
+   scale_x_discrete("Type of car") + 
+   scale_colour_discrete() + 
+   geom_point(aes(colour = drv)) + 
+   scale_colour_discrete("Drive\ntrain")
+ #+end_src
+
+ #+begin_src R :session *R* :exports both :results graphics file :file graphics/ggplot2-chap15.1.1.1b.png
+ ggplot(mpg, aes(x = class, y = displ, colour = drv)) + 
+   geom_point(aes()) + 
+   scale_x_discrete("Type of car") + 
+   scale_y_continuous("Displacement (l)") + 
+   scale_colour_discrete("Drive\ntrain")
+ #+end_src
+
+   #+RESULTS:
+
+2) [@2]
+    a. What happens if you pair a discrete variable with a continuous
+    scale?
+
+ #+begin_src R :session *R* :exports both
+ ggplot(mpg, aes(x = class, y = displ, colour = drv)) + 
+   geom_point(aes()) + 
+   scale_x_continuous("Type of car") + 
+   scale_y_continuous("Displacement (l)") + 
+   scale_colour_discrete("Drive\ntrain")
+ #+end_src
+
+    You get:
+    Error: Discrete value supplied to continuous scale
+
+    b.  What happens if you pair a continuous variable with a
+    discrete scale?
+
+ #+begin_src R ::session *R* :exports both :results graphics file :file graphics/ggplot2-chap15.1.1.2b.png
+ ggplot(mpg, aes(x = class, y = displ, colour = drv)) + 
+   geom_point(aes()) + 
+   scale_x_discrete("Type of car") + 
+   scale_y_discrete("Displacement (l)") + 
+   scale_colour_discrete("Drive\ntrain")
+   #+end_src
+
+   #+RESULTS:
+   [[file:graphics/ggplot2-chap15.1.1.2b.png]]
+
+ The plot comes put okay, but the continuous variable does not have any
+ scale marks on the axis.  
+
+** 15.7 Exercises
+
+1) [@1] What are the three most important arguments that apply to both axes
+   and legends? What do they do? Compare and contrast their operation
+   for axes vs. legends.
+
+ From section 15.3:
+
+
+| Argument | Axis                | Legend    |
+| name     | Label               | Title     |
+| breaks   | Ticks  & grid  line | Key       |
+| labels   | Tick label          | Key label |

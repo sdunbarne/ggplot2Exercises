@@ -1,0 +1,60 @@
+#+begin_comment
+#+PROPERTY: header-args :session *R* :results both
+#+end_comment
+
+* Chapter 5  -- Statistical Summaries
+
+#+begin_src R :session *R*
+library(ggplot2)
+options(crayon.enabled = FALSE) # see https://github.com/tidyverse/tibble/issues/395
+#+end_src
+
+
+** 5.4.1 Exercises
+1) [@1]  What binwidth tells you the most interesting story about the
+    distribution of carat?
+
+ The default binwidth seems to give too coarse a distribution but there
+ may be something interesting happening near 1 and 2
+
+ A ~binwidth= 0.1~ starts to reveal a mix of decaying exponential
+ distributions at 1/2, 1, 2 maybe 3
+
+ Finally, with a binwidth of 0.005, some clear trends appear with a mix
+ of decaying exponentials appearing at about multiples of  0.25 carats.
+
+ #+begin_src R :session *R* :exports both :results graphics file :file graphics/ggplot2-chap5.4.1.1.png
+   ggplot(diamonds, aes(carat) ) +
+       geom_histogram(binwidth= 0.005) +
+       xlim(0,2.5)
+ #+end_src
+
+ #+RESULTS:
+
+2) [@2]  Draw a histogram of price. What interesting patterns do you see?
+
+ Roughly speaking an exponential type drop as price increases
+
+ #+begin_src R :session *R* :exports both :results graphics file :file graphics/ggplot2-chap5.4.1.2.png
+   ggplot( diamonds, aes(price) ) +
+       geom_histogram(binwidth=200)
+ #+end_src
+
+ #+RESULTS:
+
+3) [@3]  How does the distribution of price vary with clarity?
+
+ Long tails on the distribution, more or less similar for all values
+ of clarity.
+
+ #+begin_src R :session *R* :exports both :results graphics file :file graphics/ggplot2-chap5.4.1.3.png
+   ggplot(diamonds, aes(factor(clarity), price) ) +
+       geom_violin()
+ #+end_src
+
+4) [@4]  Overlay a frequency polygon and density plot of depth. What
+    computed variable do you need to map to y to make the two plots
+    comparable? (You can either modify ~geom_freqpoly()~ or
+    ~geom_density()~.)
+
+No solution.

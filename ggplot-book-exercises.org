@@ -1,0 +1,120 @@
+-*- org-confirm-babel-evaluate: nil -*-
+
+#+SETUPFILE: https://fniessen.github.io/org-html-themes/org/theme-readtheorg.setup
+
+#+begin_comment
+#+SETUPFILE: theme-readtheorg.setup
+#+end_comment#
+
+#+begin_comment
+See https://orgmode.org/org.html, Sec 13.9 for settings
+#+OPTIONS:    ':t \n:nil @:t ::t |:t ^:{} -:t f:t *:t 
+#+OPTIONS:    H:1  toc:nil TeX:t LaTeX:t skip:t d:(HIDE) tags:not-in-toc
+#+STARTUP:    align
+#+SEQ_TODO:   TODO(t) INPROGRESS(i) WAITING(w@) | DONE(d) CANCELED(c@)
+#+TAGS:       Write(w) Update(u) Fix(f) Check(c) noexport(n)
+#+end_comment
+
+#+begin_comment
+#+EXCLUDE_TAGS: C python
+#+PROPERTY: header-args :results output
+#+PROPERTY:  header-args :eval never-export
+#+PROPERTY:  header-args  :exports both
+#+end_comment
+
+
+
+#+TITLE:     My Solutions to Exercises in "ggplot2"
+#+AUTHOR:    Steve Dunbar
+#+EMAIL:     sdunbarne@gmail.com
+#+DATE:      
+
+The following are my solutions to the on-line version of the
+work-in-progress 3rd edition of /ggplot2: elegant graphics for data
+analysis/ by Hadley Wickham, Danielle Navarro and Thomas Lin Pedersen,
+as of about March 2021.
+The on-line site is https://ggplot2-book.org/
+
+This document is an Emacs org-mode document with R code sections
+exported to HTML with F. Niessen's ~readtheorg~ style.  In
+addition to learning the Grammar of Graphics and ggplot2  by
+working the exercises, it is also an exercise in creating and
+exporting a document in org-mode that mixes both code and explanation.
+This is my entry into literate programming and reproducible
+research through the Emacs, Orgmode, and Org Babel with R ecosystem.
+
+This document only covers most of the exercises up to
+Chapter 18, since I don't have the understanding of functional
+programming in the later section of Chapter 19 and beyond, and not
+much need (yet) for the advanced methods. 
+
+#+INCLUDE: "ggplot2-chap2.org" :minlevel 1
+#+INCLUDE: "ggplot2-chap3.org" :minlevel 1
+#+INCLUDE: "ggplot2-chap4.org" :minlevel 1
+#+INCLUDE: "ggplot2-chap5.org" :minlevel 1
+#+INCLUDE: "ggplot2-chap10.org" :minlevel 1
+#+INCLUDE: "ggplot2-chap11.org" :minlevel 1
+
+DO NOT INLCUDE, no answers
+#+INCLUDE: "ggplot2-chap13.org" :minlevel 1
+#+end_comment
+
+#+INCLUDE: "ggplot2-chap14.org" :minlevel 1
+#+INCLUDE: "ggplot2-chap15.org" :minlevel 1
+#+INCLUDE: "ggplot2-chap17.org" :minlevel 1
+#+INCLUDE: "ggplot2-chap18.org" :minlevel 1
+
+#+begin_comment
+Each section must have
+    #+PROPERTY: header-args :session *R* :results both 
+    Chapter Name
+    
+    Exercises are at second level, only have section number
+
+    Exercises are numbered in the fashion 1) [@1] 
+    in order to get the exercise enumeration correct.
+
+Check parentheses, etc with
+"chkdelim -ignore \<\>\' ggplot2-chap3.org"
+
+CHeck spelling, (seems no way to skip over code section)
+try this instead: sed  '/^#+begin/,/^#+end/d' ggplot2-chap2.org | spell
+Make sure each ocde section works to give a sensible answer or file.
+
+
+
+
+Issue <2020-12-10 Thu> readtheorg them not available via internet,
+have to download or clone? see https://twitter.com/f_niessen/status/1329460415986868224
+
+Issue <2020-12-10 Thu> multi-line code blocks
+https://emacs.stackexchange.com/questions/18101/org-mode-multi-line-emphasis-and-bold
+This is okay, but ignore line breaks, rendering in a filled paragraph.
+So the solution is to enclose things in a source code block, with
+:export code header argument
+
+Issue <2020-12-10 Thu> No evaluation of R code on export
+The solution here seems to be add the :eval never-export PROPERTY on
+the main file and to eliminate the
+#+PROPERTY: header-args :session *R* :results both
+in each chapter file.
+
+Issue <2020-12-10 Thu> Inclusion of figures.
+Needs something like:
+ #+begin_src R :session *R* :exports both :results graphics file :file graphics/ggplot2-chap4.5.1.png
+
+
+| Chapter |  PROP | ChapName | Exerc | Parens | Spell | Numbering | Code~ | Graphics | Works      |
+|---------+-------+----------+-------+--------+-------+-----------+-------+----------+------------|
+|       2 | 12-03 |    12-03 | 02-22 |  02-22 | 02-22 |     02-22 |       | 02-16-21 | 02-16-21   |
+|       3 | 11-25 |    11-25 | 11-25 |  11-25 | 11-25 |     02-24 | 02-24 |    NA    | NA         |
+|       4 |  12-1 |    12-01 | 12-01 |  12-01 | 12-01 |     12-09 | 12-14 |    12-15 | 12-15      |
+|       5 | 12-01 |    12-01 | 12-01 |  12-01 | 12-01 |     12-16 | 12-16 |    12-16 | 12-16      |
+|      10 | 12-01 |    12-01 | 12-01 |  12-01 | 12-01 |     12-16 | 12-16 |    12-17 | 12-17      |
+|      11 | 12-01 |    12-01 | 12-01 |  12-01 | 12-01 |     12-17 | 12-17 |    12-17 | 12-17      |
+|      13 | 12-01 |    12-01 | 12-01 |  12-01 | 12-01 |     12-17 | 12-17 |    NA    | NA         |
+|      14 | 12-01 |    12-01 | 12-01 |  12-01 | 12-01 |     12-18 | 12-18 |    12-18 | 12-18      |
+|      15 | 12-03 |    12-03 | 12-03 |  12-03 | 12-03 |     12-17 | 12-17 | 03-02-21 | 03-02-21   |
+|      17 | 12-03 |    12-03 | 12-03 |  12-03 | 12-03 |     01-27 |  1-27 | 03-04-21 | 03-04-21   |
+|      18 | 12-03 |    12-03 | 12-03 |  12-03 | 12-03 |     01-27 | 01-27 | 03-04-21 | 03-04-21   |
+#+end_comment

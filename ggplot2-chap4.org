@@ -1,0 +1,104 @@
+#+begin_comment
+#+PROPERTY: header-args :session *R* :results both
+#+end_comment
+
+* Chapter 4  -- Collective Geoms
+
+#+begin_src R :session *R*
+library(ggplot2)
+options(crayon.enabled = FALSE) # see https://github.com/tidyverse/tibble/issues/395
+#+end_src
+
+** 4.5 Exercises
+
+1) [@1] Draw a boxplot of hwy for each value of cyl, without turning cyl
+    into a factor. What extra aesthetic do you need to set?
+
+ #+begin_src R :session *R* :exports both :results graphics file :file graphics/ggplot2-chap4.5.1.png
+ ggplot(mpg, aes(cyl, hwy, group=cyl)) + geom_boxplot()
+ #+end_src
+
+ #+RESULTS:
+ [[file:graphics/ggplot2-chap4.5.1.png]]
+
+2) [@2]    Modify the following plot so that you get one boxplot per integer value of displ.
+
+      #+begin_src :export code
+      ggplot(mpg, aes(displ, cty)) + 
+                 geom_boxplot()
+      #+end_src
+		 
+      Amazingly, the following, which was a guess, worked!
+
+ #+begin_src R :session *R* :exports both :results  graphics file :file graphics/ggplot2-chap4.5.2.png
+ ggplot(mpg, aes(displ, cty, group = round(displ))) + 
+   geom_boxplot()
+ #+end_src
+
+ #+RESULTS:
+ [[file:graphics/ggplot2-chap4.5.2.png]]
+
+3) [@3]  When illustrating the difference between mapping continuous and
+   discrete colours to a line, the discrete example needed ~aes(group
+   = 1)~. Why? What happens if that is omitted? What’s the difference
+   between ~aes(group = 1)~ and ~aes(group = 2)~? Why?
+
+    If ~group = 1~ is omitted from the ~geom_line()~, then get the following
+    error message:
+#+begin_quote
+    ~geom_path~: Each group consists of only one observation. Do you need to adjust
+    the group aesthetic?
+#+end_quote
+
+    There is no difference that I can see  between ~aes(group = 1)~ and
+    ~aes(group = 2)~.  Even if I try ~aes(group=5)~ the graphic is the same.
+    I am not sure why this should be.
+
+4) [@4]  How many bars are in each of the following plots?
+
+    #+begin_src  :export code
+    ggplot(mpg, aes(drv)) +
+        geom_bar()
+    #+end_src
+	
+    3 bars, one each for "4", "f", "r".
+
+    #+begin_src :export code
+    ggplot(mpg, aes(drv, fill = hwy, group = hwy)) +
+       geom_bar()
+    #+end_src
+       
+    3 bars, one each for "4", "f", "r", but now are shaded colour by hwy.
+
+    #+begin_src :export code
+    library(dplyr)  
+        mpg2 <- mpg %>% arrange(hwy) %>% mutate(id = seq_along(hwy)) 
+        ggplot(mpg2, aes(drv, fill = hwy, group = id)) + 
+        geom_bar()
+    #+end_src
+	
+    (Hint: try adding an outline around each bar with colour = "white")
+
+5) [@5]  Install the babynames package. It contains data about the
+    popularity of babynames in the US. Run the following code and fix
+    the resulting graph. Why does this graph make me unhappy?
+
+    #+begin_src R :session *R* :exports both :results  graphics file :file graphics/ggplot2-chap4.5.5a.png
+     library(babynames)
+     hadley <- dplyr::filter(babynames, name == "Hadley")
+     ggplot(hadley, aes(year, n)) + 
+       geom_point()
+    #+end_src
+
+    #+RESULTS:
+
+ The following is better:
+     #+begin_src R :session *R* :exports both :results  graphics file :file graphics/ggplot2-chap4.5.5b.png
+     ggplot(hadley, aes(year, n, color=sex)) +
+       geom_point()
+     #+end_src
+
+ In either case, "Hadley" is clearly a popular female name in the 21st
+ Century.
+
+

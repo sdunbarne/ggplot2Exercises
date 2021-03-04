@@ -1,0 +1,73 @@
+#+begin_comment
+#+PROPERTY: header-args :session *R* :results both
+#+end_comment
+
+* Chapter 11 -- Colour Scales and legends
+  
+#+begin_src R :session *R*
+library(ggplot2)
+options(crayon.enabled = FALSE) # see https://github.com/tidyverse/tibble/issues/395
+#+end_src
+
+#+RESULTS:
+
+** 11.3.4 Exercises
+
+1) [@1] Recreate the following plot.
+
+
+   Something like one of the following should work, but none do
+#+begin_src R :exports code
+ p  <- ggplot(mpg, aes(displ,hwy, color=drv)) + geom_point()
+ p
+ p + scale_fill_discrete(labels=c("4wd", "fwd", "rwd"))
+ p + scale_fill_manual(name="Drive", labels=c("4wd", "fwd", "rwd"))
+#+end_src
+
+
+   Here's the way, with even a small additional improvement.
+ #+begin_src R :session *R* :exports both :results graphics file :file graphics/ggplot2-chap11.3.8.1.png
+ p <- ggplot(mpg, aes(displ,hwy, color=drv)) + geom_point()
+ p + scale_color_discrete(name="Drive", labels=c("4wd", "fwd", "rwd"))
+ #+end_src
+
+** 11.7.5 Exercises
+
+1) [@1]  How do you make legends appear to the left of the plot?
+
+#+begin_src R :session *R* :exports both :results graphics file :file graphics/ggplot2-chap11.7.5.1.png
+ ggplot(mpg, aes(displ,hwy, color=drv)) + geom_point() + theme(legend.position="left")
+#+end_src
+
+    #+RESULTS:
+
+2) [@2] What’s gone wrong with this plot? How could you fix it?
+
+#+begin_src R :exports code
+ ggplot(mpg, aes(displ, hwy)) + 
+   geom_point(aes(colour = drv, shape = drv)) + 
+   scale_colour_discrete("Drive train")
+#+end_src
+
+
+ What's wrong is that the points have two aesthetics and two legends.
+ The fix is to combine the color and the shape into one legend.
+ The way to do it is to omit the ~scale_color_discrete()~
+
+ #+begin_src R :session *R* :exports both :results graphics file :file graphics/ggplot2-chap11.7.5.2.png
+  ggplot(mpg, aes(displ,hwy)) + geom_point(aes(color=drv,shape=drv))
+ #+end_src
+3) [@3] Can you recreate the code for this plot?
+
+ ~`geom_smooth()` using formula 'y ~ x'~
+
+ #+begin_src R :session *R* :exports both :results graphics file :file graphics/ggplot2-chap11.7.5.3.png
+ ggplot(mpg, aes(displ,hwy, color=class)) +
+     geom_point() +
+     geom_smooth(method="lm", se=FALSE) +
+     theme(legend.position="bottom")
+ #+end_src
+
+ #+RESULTS:
+ [[file:graphics/ggplot2-chap11.7.5.3.png]]
+ 

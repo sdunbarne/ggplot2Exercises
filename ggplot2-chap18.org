@@ -1,0 +1,137 @@
+#+PROPERTY: header-args :session *R* :results both 
+
+#+begin_src R :session *R*  :results output
+library(ggplot2)
+options(crayon.enabled = FALSE) # see https://github.com/tidyverse/tibble/issues/395
+#+end_src
+
+#+RESULTS:
+
+* Chapter 18 -- Themes
+  
+** 18.2.1 Exercises
+
+1) [@1] Try out all the themes in ggthemes. Which do you like the best?
+
+    For examples in use, see
+    https://ggplot2.tidyverse.org/reference/ggtheme.html
+    and
+    https://yutannihilation.github.io/allYourFigureAreBelongToUs/ggthemes/
+   
+    I haven't tried all the themes in ggthemes.  Among the 8 default
+    themes that come with ggplot2, I like ~theme_linedraw()~ the best,
+    since it seems to measure and indicate the data information most clearly, and it
+    resembles my understanding of classic graphs best. 
+   
+2) [@2]   What aspects of the default theme do you like? What don’t you like?
+     What would you change?
+
+     I like that colors "pop" against the grey background.  The lack of
+    axes conform to the Tufte admonition to minimize ink.
+
+    On the other hand, the grey background seems to me to be an
+    unnecessary use of additional ink.
+
+    For changes, I would make the ~theme_linedraw()~ the default, since
+    it conforms to my understanding of typical physical science and
+    engineering graphs.
+
+3) [@3]   Look at the plots in your favourite scientific journal. What
+    theme do they most resemble? What are the main differences?
+
+    I chose the Notices of the American Mathematical Society 2018
+    Survey of Faculty Salaries, in the February 2020 issue of the
+    Notices, Volume, 67, Number 2, page 242.  The AMS has an interest
+    in high quality mathematical typesetting and typogaphy, so it is a
+    good choice for me.  The graphs there appear to be closest to ~theme_hc()~,
+    the Highcharts JS theme.  There is also a strong similarity to the
+    ~theme_calc()~.
+   
+
+** 18.4.6 Exercises
+
+1) [@1]   Create the ugliest plot possible! (Contributed by Andrew
+    D. Steen, University of Tennessee - Knoxville)
+
+ Not going there!
+
+2) [@2]   ~theme_dark()~ makes the inside of the plot dark, but not the
+    outside. Change the plot background to black, and then update the
+    text settings so you can still read the labels.
+
+    I am not sure if this is asking to fill the border or the plot area.
+
+ #+begin_src R :session *R* :exports both :results graphics file :file graphics/ggplot2-chap18.4.6.2.png
+   df <- data.frame(x = 1:3, y = 1:3)
+   base <- ggplot(df, aes(x, y)) + geom_point()
+   base_t <- base +
+   labs(title = "This is a ggplot title line one\n This is a ggplot line two")
+   base_t + theme(plot.background=element_rect(fill="black"),
+                  title=element_text(color="white"),
+		  axis.text=element_text(colour="white"),
+		  axis.title=element_text(colour="white"))
+ #+end_src
+
+ #+RESULTS:
+   
+   
+3) [@3]    Make an elegant theme that uses “linen” as the background
+    colour and a serif font for the text.
+
+ Needs info from 18.3, particularly ~element_rect()~,
+ ~base + theme(panel.background = element_rect(fill = "linen"))~
+
+ Looks like I am going to need ~element_text(family="serif")~
+
+ The following seems to work for an ad hoc solution.  To get a more
+ permanent solution, I would want to define a ~theme_elegant()~.
+
+ #+begin_src R :session *R*  :exports both :results graphics file :file graphics/ggplot2-chap18.4.6.3.png
+     df <- data.frame(x = 1:3, y = 1:3)
+     base <- ggplot(df, aes(x, y)) + geom_point()
+     base_t <- base +
+     labs(title = "This is a ggplot title line one\nThis is a ggplot line two") +
+       theme(panel.background = element_rect(fill = "linen"),
+	     text=element_text(family="serif"))
+     base_t
+
+ #+end_src
+
+ #+RESULTS:
+ 
+4) [@4]   Systematically explore the effects of hjust when you have a
+    multiline title. Why doesn’t ~vjust~ do anything?
+
+    First, default is left justified.
+    #+begin_src R :session *R* :exports both :results graphics file :file graphics/ggplot2-chap18.4.6.4a.png
+      df <- data.frame(x = 1:3, y = 1:3)
+      base <- ggplot(df, aes(x, y)) + geom_point()
+      base_t <- base +
+      labs(title = "This is a ggplot title line one\nThis is a ggplot line two") +
+      xlab(NULL) + 
+      ylab(NULL)
+      base_t
+    #+end_src
+
+    Second, with ~hjust = 1~, title is right-justified.
+    #+begin_src R :session *R* :exports both :results graphics file :file graphics/ggplot2-chap18.4.6.4b.png
+      df <- data.frame(x = 1:3, y = 1:3)
+      base <- ggplot(df, aes(x, y)) + geom_point()
+      base_t <- base +
+      labs(title = "This is a ggplot title line one\nThis is a ggplot line two") + 
+      xlab(NULL) + 
+      ylab(NULL)
+      base_t + theme(plot.title = element_text(hjust = 1))
+    #+end_src
+
+    Third with ~hjust = 0.5~, title is centered
+    #+begin_src R :session *R* :exports both :results graphics file :file graphics/ggplot2-chap18.4.6.4c.png
+      df <- data.frame(x = 1:3, y = 1:3)
+      base <- ggplot(df, aes(x, y)) + geom_point()
+      base_t <- base +
+      labs(title = "This is a ggplot title line one\nThis is a ggplot line two")+ 
+      xlab(NULL) + 
+      ylab(NULL)
+      base_t + theme(plot.title = element_text(hjust = 0.5))
+    #+end_src
+   

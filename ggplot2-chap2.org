@@ -1,0 +1,591 @@
+#+PROPERTY: header-args :session *R* :results both
+
+* Chapter 2  -- First Steps
+
+#+begin_src R
+library(ggplot2)
+options(crayon.enabled = FALSE) # see https://github.com/tidyverse/tibble/issues/395
+#+end_src
+
+#+RESULTS:
+: FALSE
+
+** 2.2.1
+
+1) List five functions that you could use to get more information
+   about the mpg dataset.
+
+#+begin_src  R 
+head(mpg)
+tail(mpg)
+str(mpg)
+nrow(mpg)
+ncol(mpg)
+#+end_src
+
+#+RESULTS:
+: 11
+
+2) [@2] How can you find out what other datasets are included with ggplot2?
+
+#+begin_src  R
+data(package="ggplot2")
+#+end_src
+
+#+RESULTS:
+
+3) [@3] Apart from the US, most countries use fuel consumption (fuel
+   consumed over fixed distance) rather than fuel economy (distance
+   traveled with fixed amount of fuel). How could you convert cty and
+   hwy into the European standard of l/100km?
+
+ (62.1371192237 * mi/100 km)*(l/ 0.264172052358 gal)/mpg
+  = ( 16.4148903129/mpg)* (l/100 km)
+
+#+begin_src R
+library("tidyverse")
+mutate(mpg, cty_consump = 16.4148903129/cty, hwy_consump = 16.4148903129/hwy)
+#+end_src
+
+#+RESULTS:
+| audi       | a4                     | 1.8 | 1999 | 4 | auto(l5)   | f | 18 | 29 | p | compact    | 0.911938350716667 | 0.566030700444828 |
+| audi       | a4                     | 1.8 | 1999 | 4 | manual(m5) | f | 21 | 29 | p | compact    | 0.781661443471429 | 0.566030700444828 |
+| audi       | a4                     |   2 | 2008 | 4 | manual(m6) | f | 20 | 31 | p | compact    |    0.820744515645 |  0.52951259073871 |
+| audi       | a4                     |   2 | 2008 | 4 | auto(av)   | f | 21 | 30 | p | compact    | 0.781661443471429 |     0.54716301043 |
+| audi       | a4                     | 2.8 | 1999 | 6 | auto(l5)   | f | 16 | 26 | p | compact    |  1.02593064455625 | 0.631341935111538 |
+| audi       | a4                     | 2.8 | 1999 | 6 | manual(m5) | f | 18 | 26 | p | compact    | 0.911938350716667 | 0.631341935111538 |
+| audi       | a4                     | 3.1 | 2008 | 6 | auto(av)   | f | 18 | 27 | p | compact    | 0.911938350716667 | 0.607958900477778 |
+| audi       | a4 quattro             | 1.8 | 1999 | 4 | manual(m5) | 4 | 18 | 26 | p | compact    | 0.911938350716667 | 0.631341935111538 |
+| audi       | a4 quattro             | 1.8 | 1999 | 4 | auto(l5)   | 4 | 16 | 25 | p | compact    |  1.02593064455625 |    0.656595612516 |
+| audi       | a4 quattro             |   2 | 2008 | 4 | manual(m6) | 4 | 20 | 28 | p | compact    |    0.820744515645 | 0.586246082603571 |
+| audi       | a4 quattro             |   2 | 2008 | 4 | auto(s6)   | 4 | 19 | 27 | p | compact    | 0.863941595415789 | 0.607958900477778 |
+| audi       | a4 quattro             | 2.8 | 1999 | 6 | auto(l5)   | 4 | 15 | 25 | p | compact    |     1.09432602086 |    0.656595612516 |
+| audi       | a4 quattro             | 2.8 | 1999 | 6 | manual(m5) | 4 | 17 | 25 | p | compact    | 0.965581783111765 |    0.656595612516 |
+| audi       | a4 quattro             | 3.1 | 2008 | 6 | auto(s6)   | 4 | 17 | 25 | p | compact    | 0.965581783111765 |    0.656595612516 |
+| audi       | a4 quattro             | 3.1 | 2008 | 6 | manual(m6) | 4 | 15 | 25 | p | compact    |     1.09432602086 |    0.656595612516 |
+| audi       | a6 quattro             | 2.8 | 1999 | 6 | auto(l5)   | 4 | 15 | 24 | p | midsize    |     1.09432602086 |   0.6839537630375 |
+| audi       | a6 quattro             | 3.1 | 2008 | 6 | auto(s6)   | 4 | 17 | 25 | p | midsize    | 0.965581783111765 |    0.656595612516 |
+| audi       | a6 quattro             | 4.2 | 2008 | 8 | auto(s6)   | 4 | 16 | 23 | p | midsize    |  1.02593064455625 | 0.713690883169565 |
+| chevrolet  | c1500 suburban 2wd     | 5.3 | 2008 | 8 | auto(l4)   | r | 14 | 20 | r | suv        |  1.17249216520714 |    0.820744515645 |
+| chevrolet  | c1500 suburban 2wd     | 5.3 | 2008 | 8 | auto(l4)   | r | 11 | 15 | e | suv        |  1.49226275571818 |     1.09432602086 |
+| chevrolet  | c1500 suburban 2wd     | 5.3 | 2008 | 8 | auto(l4)   | r | 14 | 20 | r | suv        |  1.17249216520714 |    0.820744515645 |
+| chevrolet  | c1500 suburban 2wd     | 5.7 | 1999 | 8 | auto(l4)   | r | 13 | 17 | r | suv        |  1.26268387022308 | 0.965581783111765 |
+| chevrolet  | c1500 suburban 2wd     |   6 | 2008 | 8 | auto(l4)   | r | 12 | 17 | r | suv        |    1.367907526075 | 0.965581783111765 |
+| chevrolet  | corvette               | 5.7 | 1999 | 8 | manual(m6) | r | 16 | 26 | p | 2seater    |  1.02593064455625 | 0.631341935111538 |
+| chevrolet  | corvette               | 5.7 | 1999 | 8 | auto(l4)   | r | 15 | 23 | p | 2seater    |     1.09432602086 | 0.713690883169565 |
+| chevrolet  | corvette               | 6.2 | 2008 | 8 | manual(m6) | r | 16 | 26 | p | 2seater    |  1.02593064455625 | 0.631341935111538 |
+| chevrolet  | corvette               | 6.2 | 2008 | 8 | auto(s6)   | r | 15 | 25 | p | 2seater    |     1.09432602086 |    0.656595612516 |
+| chevrolet  | corvette               |   7 | 2008 | 8 | manual(m6) | r | 15 | 24 | p | 2seater    |     1.09432602086 |   0.6839537630375 |
+| chevrolet  | k1500 tahoe 4wd        | 5.3 | 2008 | 8 | auto(l4)   | 4 | 14 | 19 | r | suv        |  1.17249216520714 | 0.863941595415789 |
+| chevrolet  | k1500 tahoe 4wd        | 5.3 | 2008 | 8 | auto(l4)   | 4 | 11 | 14 | e | suv        |  1.49226275571818 |  1.17249216520714 |
+| chevrolet  | k1500 tahoe 4wd        | 5.7 | 1999 | 8 | auto(l4)   | 4 | 11 | 15 | r | suv        |  1.49226275571818 |     1.09432602086 |
+| chevrolet  | k1500 tahoe 4wd        | 6.5 | 1999 | 8 | auto(l4)   | 4 | 14 | 17 | d | suv        |  1.17249216520714 | 0.965581783111765 |
+| chevrolet  | malibu                 | 2.4 | 1999 | 4 | auto(l4)   | f | 19 | 27 | r | midsize    | 0.863941595415789 | 0.607958900477778 |
+| chevrolet  | malibu                 | 2.4 | 2008 | 4 | auto(l4)   | f | 22 | 30 | r | midsize    | 0.746131377859091 |     0.54716301043 |
+| chevrolet  | malibu                 | 3.1 | 1999 | 6 | auto(l4)   | f | 18 | 26 | r | midsize    | 0.911938350716667 | 0.631341935111538 |
+| chevrolet  | malibu                 | 3.5 | 2008 | 6 | auto(l4)   | f | 18 | 29 | r | midsize    | 0.911938350716667 | 0.566030700444828 |
+| chevrolet  | malibu                 | 3.6 | 2008 | 6 | auto(s6)   | f | 17 | 26 | r | midsize    | 0.965581783111765 | 0.631341935111538 |
+| dodge      | caravan 2wd            | 2.4 | 1999 | 4 | auto(l3)   | f | 18 | 24 | r | minivan    | 0.911938350716667 |   0.6839537630375 |
+| dodge      | caravan 2wd            |   3 | 1999 | 6 | auto(l4)   | f | 17 | 24 | r | minivan    | 0.965581783111765 |   0.6839537630375 |
+| dodge      | caravan 2wd            | 3.3 | 1999 | 6 | auto(l4)   | f | 16 | 22 | r | minivan    |  1.02593064455625 | 0.746131377859091 |
+| dodge      | caravan 2wd            | 3.3 | 1999 | 6 | auto(l4)   | f | 16 | 22 | r | minivan    |  1.02593064455625 | 0.746131377859091 |
+| dodge      | caravan 2wd            | 3.3 | 2008 | 6 | auto(l4)   | f | 17 | 24 | r | minivan    | 0.965581783111765 |   0.6839537630375 |
+| dodge      | caravan 2wd            | 3.3 | 2008 | 6 | auto(l4)   | f | 17 | 24 | r | minivan    | 0.965581783111765 |   0.6839537630375 |
+| dodge      | caravan 2wd            | 3.3 | 2008 | 6 | auto(l4)   | f | 11 | 17 | e | minivan    |  1.49226275571818 | 0.965581783111765 |
+| dodge      | caravan 2wd            | 3.8 | 1999 | 6 | auto(l4)   | f | 15 | 22 | r | minivan    |     1.09432602086 | 0.746131377859091 |
+| dodge      | caravan 2wd            | 3.8 | 1999 | 6 | auto(l4)   | f | 15 | 21 | r | minivan    |     1.09432602086 | 0.781661443471429 |
+| dodge      | caravan 2wd            | 3.8 | 2008 | 6 | auto(l6)   | f | 16 | 23 | r | minivan    |  1.02593064455625 | 0.713690883169565 |
+| dodge      | caravan 2wd            |   4 | 2008 | 6 | auto(l6)   | f | 16 | 23 | r | minivan    |  1.02593064455625 | 0.713690883169565 |
+| dodge      | dakota pickup 4wd      | 3.7 | 2008 | 6 | manual(m6) | 4 | 15 | 19 | r | pickup     |     1.09432602086 | 0.863941595415789 |
+| dodge      | dakota pickup 4wd      | 3.7 | 2008 | 6 | auto(l4)   | 4 | 14 | 18 | r | pickup     |  1.17249216520714 | 0.911938350716667 |
+| dodge      | dakota pickup 4wd      | 3.9 | 1999 | 6 | auto(l4)   | 4 | 13 | 17 | r | pickup     |  1.26268387022308 | 0.965581783111765 |
+| dodge      | dakota pickup 4wd      | 3.9 | 1999 | 6 | manual(m5) | 4 | 14 | 17 | r | pickup     |  1.17249216520714 | 0.965581783111765 |
+| dodge      | dakota pickup 4wd      | 4.7 | 2008 | 8 | auto(l5)   | 4 | 14 | 19 | r | pickup     |  1.17249216520714 | 0.863941595415789 |
+| dodge      | dakota pickup 4wd      | 4.7 | 2008 | 8 | auto(l5)   | 4 | 14 | 19 | r | pickup     |  1.17249216520714 | 0.863941595415789 |
+| dodge      | dakota pickup 4wd      | 4.7 | 2008 | 8 | auto(l5)   | 4 |  9 | 12 | e | pickup     |  1.82387670143333 |    1.367907526075 |
+| dodge      | dakota pickup 4wd      | 5.2 | 1999 | 8 | manual(m5) | 4 | 11 | 17 | r | pickup     |  1.49226275571818 | 0.965581783111765 |
+| dodge      | dakota pickup 4wd      | 5.2 | 1999 | 8 | auto(l4)   | 4 | 11 | 15 | r | pickup     |  1.49226275571818 |     1.09432602086 |
+| dodge      | durango 4wd            | 3.9 | 1999 | 6 | auto(l4)   | 4 | 13 | 17 | r | suv        |  1.26268387022308 | 0.965581783111765 |
+| dodge      | durango 4wd            | 4.7 | 2008 | 8 | auto(l5)   | 4 | 13 | 17 | r | suv        |  1.26268387022308 | 0.965581783111765 |
+| dodge      | durango 4wd            | 4.7 | 2008 | 8 | auto(l5)   | 4 |  9 | 12 | e | suv        |  1.82387670143333 |    1.367907526075 |
+| dodge      | durango 4wd            | 4.7 | 2008 | 8 | auto(l5)   | 4 | 13 | 17 | r | suv        |  1.26268387022308 | 0.965581783111765 |
+| dodge      | durango 4wd            | 5.2 | 1999 | 8 | auto(l4)   | 4 | 11 | 16 | r | suv        |  1.49226275571818 |  1.02593064455625 |
+| dodge      | durango 4wd            | 5.7 | 2008 | 8 | auto(l5)   | 4 | 13 | 18 | r | suv        |  1.26268387022308 | 0.911938350716667 |
+| dodge      | durango 4wd            | 5.9 | 1999 | 8 | auto(l4)   | 4 | 11 | 15 | r | suv        |  1.49226275571818 |     1.09432602086 |
+| dodge      | ram 1500 pickup 4wd    | 4.7 | 2008 | 8 | manual(m6) | 4 | 12 | 16 | r | pickup     |    1.367907526075 |  1.02593064455625 |
+| dodge      | ram 1500 pickup 4wd    | 4.7 | 2008 | 8 | auto(l5)   | 4 |  9 | 12 | e | pickup     |  1.82387670143333 |    1.367907526075 |
+| dodge      | ram 1500 pickup 4wd    | 4.7 | 2008 | 8 | auto(l5)   | 4 | 13 | 17 | r | pickup     |  1.26268387022308 | 0.965581783111765 |
+| dodge      | ram 1500 pickup 4wd    | 4.7 | 2008 | 8 | auto(l5)   | 4 | 13 | 17 | r | pickup     |  1.26268387022308 | 0.965581783111765 |
+| dodge      | ram 1500 pickup 4wd    | 4.7 | 2008 | 8 | manual(m6) | 4 | 12 | 16 | r | pickup     |    1.367907526075 |  1.02593064455625 |
+| dodge      | ram 1500 pickup 4wd    | 4.7 | 2008 | 8 | manual(m6) | 4 |  9 | 12 | e | pickup     |  1.82387670143333 |    1.367907526075 |
+| dodge      | ram 1500 pickup 4wd    | 5.2 | 1999 | 8 | auto(l4)   | 4 | 11 | 15 | r | pickup     |  1.49226275571818 |     1.09432602086 |
+| dodge      | ram 1500 pickup 4wd    | 5.2 | 1999 | 8 | manual(m5) | 4 | 11 | 16 | r | pickup     |  1.49226275571818 |  1.02593064455625 |
+| dodge      | ram 1500 pickup 4wd    | 5.7 | 2008 | 8 | auto(l5)   | 4 | 13 | 17 | r | pickup     |  1.26268387022308 | 0.965581783111765 |
+| dodge      | ram 1500 pickup 4wd    | 5.9 | 1999 | 8 | auto(l4)   | 4 | 11 | 15 | r | pickup     |  1.49226275571818 |     1.09432602086 |
+| ford       | expedition 2wd         | 4.6 | 1999 | 8 | auto(l4)   | r | 11 | 17 | r | suv        |  1.49226275571818 | 0.965581783111765 |
+| ford       | expedition 2wd         | 5.4 | 1999 | 8 | auto(l4)   | r | 11 | 17 | r | suv        |  1.49226275571818 | 0.965581783111765 |
+| ford       | expedition 2wd         | 5.4 | 2008 | 8 | auto(l6)   | r | 12 | 18 | r | suv        |    1.367907526075 | 0.911938350716667 |
+| ford       | explorer 4wd           |   4 | 1999 | 6 | auto(l5)   | 4 | 14 | 17 | r | suv        |  1.17249216520714 | 0.965581783111765 |
+| ford       | explorer 4wd           |   4 | 1999 | 6 | manual(m5) | 4 | 15 | 19 | r | suv        |     1.09432602086 | 0.863941595415789 |
+| ford       | explorer 4wd           |   4 | 1999 | 6 | auto(l5)   | 4 | 14 | 17 | r | suv        |  1.17249216520714 | 0.965581783111765 |
+| ford       | explorer 4wd           |   4 | 2008 | 6 | auto(l5)   | 4 | 13 | 19 | r | suv        |  1.26268387022308 | 0.863941595415789 |
+| ford       | explorer 4wd           | 4.6 | 2008 | 8 | auto(l6)   | 4 | 13 | 19 | r | suv        |  1.26268387022308 | 0.863941595415789 |
+| ford       | explorer 4wd           |   5 | 1999 | 8 | auto(l4)   | 4 | 13 | 17 | r | suv        |  1.26268387022308 | 0.965581783111765 |
+| ford       | f150 pickup 4wd        | 4.2 | 1999 | 6 | auto(l4)   | 4 | 14 | 17 | r | pickup     |  1.17249216520714 | 0.965581783111765 |
+| ford       | f150 pickup 4wd        | 4.2 | 1999 | 6 | manual(m5) | 4 | 14 | 17 | r | pickup     |  1.17249216520714 | 0.965581783111765 |
+| ford       | f150 pickup 4wd        | 4.6 | 1999 | 8 | manual(m5) | 4 | 13 | 16 | r | pickup     |  1.26268387022308 |  1.02593064455625 |
+| ford       | f150 pickup 4wd        | 4.6 | 1999 | 8 | auto(l4)   | 4 | 13 | 16 | r | pickup     |  1.26268387022308 |  1.02593064455625 |
+| ford       | f150 pickup 4wd        | 4.6 | 2008 | 8 | auto(l4)   | 4 | 13 | 17 | r | pickup     |  1.26268387022308 | 0.965581783111765 |
+| ford       | f150 pickup 4wd        | 5.4 | 1999 | 8 | auto(l4)   | 4 | 11 | 15 | r | pickup     |  1.49226275571818 |     1.09432602086 |
+| ford       | f150 pickup 4wd        | 5.4 | 2008 | 8 | auto(l4)   | 4 | 13 | 17 | r | pickup     |  1.26268387022308 | 0.965581783111765 |
+| ford       | mustang                | 3.8 | 1999 | 6 | manual(m5) | r | 18 | 26 | r | subcompact | 0.911938350716667 | 0.631341935111538 |
+| ford       | mustang                | 3.8 | 1999 | 6 | auto(l4)   | r | 18 | 25 | r | subcompact | 0.911938350716667 |    0.656595612516 |
+| ford       | mustang                |   4 | 2008 | 6 | manual(m5) | r | 17 | 26 | r | subcompact | 0.965581783111765 | 0.631341935111538 |
+| ford       | mustang                |   4 | 2008 | 6 | auto(l5)   | r | 16 | 24 | r | subcompact |  1.02593064455625 |   0.6839537630375 |
+| ford       | mustang                | 4.6 | 1999 | 8 | auto(l4)   | r | 15 | 21 | r | subcompact |     1.09432602086 | 0.781661443471429 |
+| ford       | mustang                | 4.6 | 1999 | 8 | manual(m5) | r | 15 | 22 | r | subcompact |     1.09432602086 | 0.746131377859091 |
+| ford       | mustang                | 4.6 | 2008 | 8 | manual(m5) | r | 15 | 23 | r | subcompact |     1.09432602086 | 0.713690883169565 |
+| ford       | mustang                | 4.6 | 2008 | 8 | auto(l5)   | r | 15 | 22 | r | subcompact |     1.09432602086 | 0.746131377859091 |
+| ford       | mustang                | 5.4 | 2008 | 8 | manual(m6) | r | 14 | 20 | p | subcompact |  1.17249216520714 |    0.820744515645 |
+| honda      | civic                  | 1.6 | 1999 | 4 | manual(m5) | f | 28 | 33 | r | subcompact | 0.586246082603571 | 0.497420918572727 |
+| honda      | civic                  | 1.6 | 1999 | 4 | auto(l4)   | f | 24 | 32 | r | subcompact |   0.6839537630375 | 0.512965322278125 |
+| honda      | civic                  | 1.6 | 1999 | 4 | manual(m5) | f | 25 | 32 | r | subcompact |    0.656595612516 | 0.512965322278125 |
+| honda      | civic                  | 1.6 | 1999 | 4 | manual(m5) | f | 23 | 29 | p | subcompact | 0.713690883169565 | 0.566030700444828 |
+| honda      | civic                  | 1.6 | 1999 | 4 | auto(l4)   | f | 24 | 32 | r | subcompact |   0.6839537630375 | 0.512965322278125 |
+| honda      | civic                  | 1.8 | 2008 | 4 | manual(m5) | f | 26 | 34 | r | subcompact | 0.631341935111538 | 0.482790891555882 |
+| honda      | civic                  | 1.8 | 2008 | 4 | auto(l5)   | f | 25 | 36 | r | subcompact |    0.656595612516 | 0.455969175358333 |
+| honda      | civic                  | 1.8 | 2008 | 4 | auto(l5)   | f | 24 | 36 | c | subcompact |   0.6839537630375 | 0.455969175358333 |
+| honda      | civic                  |   2 | 2008 | 4 | manual(m6) | f | 21 | 29 | p | subcompact | 0.781661443471429 | 0.566030700444828 |
+| hyundai    | sonata                 | 2.4 | 1999 | 4 | auto(l4)   | f | 18 | 26 | r | midsize    | 0.911938350716667 | 0.631341935111538 |
+| hyundai    | sonata                 | 2.4 | 1999 | 4 | manual(m5) | f | 18 | 27 | r | midsize    | 0.911938350716667 | 0.607958900477778 |
+| hyundai    | sonata                 | 2.4 | 2008 | 4 | auto(l4)   | f | 21 | 30 | r | midsize    | 0.781661443471429 |     0.54716301043 |
+| hyundai    | sonata                 | 2.4 | 2008 | 4 | manual(m5) | f | 21 | 31 | r | midsize    | 0.781661443471429 |  0.52951259073871 |
+| hyundai    | sonata                 | 2.5 | 1999 | 6 | auto(l4)   | f | 18 | 26 | r | midsize    | 0.911938350716667 | 0.631341935111538 |
+| hyundai    | sonata                 | 2.5 | 1999 | 6 | manual(m5) | f | 18 | 26 | r | midsize    | 0.911938350716667 | 0.631341935111538 |
+| hyundai    | sonata                 | 3.3 | 2008 | 6 | auto(l5)   | f | 19 | 28 | r | midsize    | 0.863941595415789 | 0.586246082603571 |
+| hyundai    | tiburon                |   2 | 1999 | 4 | auto(l4)   | f | 19 | 26 | r | subcompact | 0.863941595415789 | 0.631341935111538 |
+| hyundai    | tiburon                |   2 | 1999 | 4 | manual(m5) | f | 19 | 29 | r | subcompact | 0.863941595415789 | 0.566030700444828 |
+| hyundai    | tiburon                |   2 | 2008 | 4 | manual(m5) | f | 20 | 28 | r | subcompact |    0.820744515645 | 0.586246082603571 |
+| hyundai    | tiburon                |   2 | 2008 | 4 | auto(l4)   | f | 20 | 27 | r | subcompact |    0.820744515645 | 0.607958900477778 |
+| hyundai    | tiburon                | 2.7 | 2008 | 6 | auto(l4)   | f | 17 | 24 | r | subcompact | 0.965581783111765 |   0.6839537630375 |
+| hyundai    | tiburon                | 2.7 | 2008 | 6 | manual(m6) | f | 16 | 24 | r | subcompact |  1.02593064455625 |   0.6839537630375 |
+| hyundai    | tiburon                | 2.7 | 2008 | 6 | manual(m5) | f | 17 | 24 | r | subcompact | 0.965581783111765 |   0.6839537630375 |
+| jeep       | grand cherokee 4wd     |   3 | 2008 | 6 | auto(l5)   | 4 | 17 | 22 | d | suv        | 0.965581783111765 | 0.746131377859091 |
+| jeep       | grand cherokee 4wd     | 3.7 | 2008 | 6 | auto(l5)   | 4 | 15 | 19 | r | suv        |     1.09432602086 | 0.863941595415789 |
+| jeep       | grand cherokee 4wd     |   4 | 1999 | 6 | auto(l4)   | 4 | 15 | 20 | r | suv        |     1.09432602086 |    0.820744515645 |
+| jeep       | grand cherokee 4wd     | 4.7 | 1999 | 8 | auto(l4)   | 4 | 14 | 17 | r | suv        |  1.17249216520714 | 0.965581783111765 |
+| jeep       | grand cherokee 4wd     | 4.7 | 2008 | 8 | auto(l5)   | 4 |  9 | 12 | e | suv        |  1.82387670143333 |    1.367907526075 |
+| jeep       | grand cherokee 4wd     | 4.7 | 2008 | 8 | auto(l5)   | 4 | 14 | 19 | r | suv        |  1.17249216520714 | 0.863941595415789 |
+| jeep       | grand cherokee 4wd     | 5.7 | 2008 | 8 | auto(l5)   | 4 | 13 | 18 | r | suv        |  1.26268387022308 | 0.911938350716667 |
+| jeep       | grand cherokee 4wd     | 6.1 | 2008 | 8 | auto(l5)   | 4 | 11 | 14 | p | suv        |  1.49226275571818 |  1.17249216520714 |
+| land rover | range rover            |   4 | 1999 | 8 | auto(l4)   | 4 | 11 | 15 | p | suv        |  1.49226275571818 |     1.09432602086 |
+| land rover | range rover            | 4.2 | 2008 | 8 | auto(s6)   | 4 | 12 | 18 | r | suv        |    1.367907526075 | 0.911938350716667 |
+| land rover | range rover            | 4.4 | 2008 | 8 | auto(s6)   | 4 | 12 | 18 | r | suv        |    1.367907526075 | 0.911938350716667 |
+| land rover | range rover            | 4.6 | 1999 | 8 | auto(l4)   | 4 | 11 | 15 | p | suv        |  1.49226275571818 |     1.09432602086 |
+| lincoln    | navigator 2wd          | 5.4 | 1999 | 8 | auto(l4)   | r | 11 | 17 | r | suv        |  1.49226275571818 | 0.965581783111765 |
+| lincoln    | navigator 2wd          | 5.4 | 1999 | 8 | auto(l4)   | r | 11 | 16 | p | suv        |  1.49226275571818 |  1.02593064455625 |
+| lincoln    | navigator 2wd          | 5.4 | 2008 | 8 | auto(l6)   | r | 12 | 18 | r | suv        |    1.367907526075 | 0.911938350716667 |
+| mercury    | mountaineer 4wd        |   4 | 1999 | 6 | auto(l5)   | 4 | 14 | 17 | r | suv        |  1.17249216520714 | 0.965581783111765 |
+| mercury    | mountaineer 4wd        |   4 | 2008 | 6 | auto(l5)   | 4 | 13 | 19 | r | suv        |  1.26268387022308 | 0.863941595415789 |
+| mercury    | mountaineer 4wd        | 4.6 | 2008 | 8 | auto(l6)   | 4 | 13 | 19 | r | suv        |  1.26268387022308 | 0.863941595415789 |
+| mercury    | mountaineer 4wd        |   5 | 1999 | 8 | auto(l4)   | 4 | 13 | 17 | r | suv        |  1.26268387022308 | 0.965581783111765 |
+| nissan     | altima                 | 2.4 | 1999 | 4 | manual(m5) | f | 21 | 29 | r | compact    | 0.781661443471429 | 0.566030700444828 |
+| nissan     | altima                 | 2.4 | 1999 | 4 | auto(l4)   | f | 19 | 27 | r | compact    | 0.863941595415789 | 0.607958900477778 |
+| nissan     | altima                 | 2.5 | 2008 | 4 | auto(av)   | f | 23 | 31 | r | midsize    | 0.713690883169565 |  0.52951259073871 |
+| nissan     | altima                 | 2.5 | 2008 | 4 | manual(m6) | f | 23 | 32 | r | midsize    | 0.713690883169565 | 0.512965322278125 |
+| nissan     | altima                 | 3.5 | 2008 | 6 | manual(m6) | f | 19 | 27 | p | midsize    | 0.863941595415789 | 0.607958900477778 |
+| nissan     | altima                 | 3.5 | 2008 | 6 | auto(av)   | f | 19 | 26 | p | midsize    | 0.863941595415789 | 0.631341935111538 |
+| nissan     | maxima                 |   3 | 1999 | 6 | auto(l4)   | f | 18 | 26 | r | midsize    | 0.911938350716667 | 0.631341935111538 |
+| nissan     | maxima                 |   3 | 1999 | 6 | manual(m5) | f | 19 | 25 | r | midsize    | 0.863941595415789 |    0.656595612516 |
+| nissan     | maxima                 | 3.5 | 2008 | 6 | auto(av)   | f | 19 | 25 | p | midsize    | 0.863941595415789 |    0.656595612516 |
+| nissan     | pathfinder 4wd         | 3.3 | 1999 | 6 | auto(l4)   | 4 | 14 | 17 | r | suv        |  1.17249216520714 | 0.965581783111765 |
+| nissan     | pathfinder 4wd         | 3.3 | 1999 | 6 | manual(m5) | 4 | 15 | 17 | r | suv        |     1.09432602086 | 0.965581783111765 |
+| nissan     | pathfinder 4wd         |   4 | 2008 | 6 | auto(l5)   | 4 | 14 | 20 | p | suv        |  1.17249216520714 |    0.820744515645 |
+| nissan     | pathfinder 4wd         | 5.6 | 2008 | 8 | auto(s5)   | 4 | 12 | 18 | p | suv        |    1.367907526075 | 0.911938350716667 |
+| pontiac    | grand prix             | 3.1 | 1999 | 6 | auto(l4)   | f | 18 | 26 | r | midsize    | 0.911938350716667 | 0.631341935111538 |
+| pontiac    | grand prix             | 3.8 | 1999 | 6 | auto(l4)   | f | 16 | 26 | p | midsize    |  1.02593064455625 | 0.631341935111538 |
+| pontiac    | grand prix             | 3.8 | 1999 | 6 | auto(l4)   | f | 17 | 27 | r | midsize    | 0.965581783111765 | 0.607958900477778 |
+| pontiac    | grand prix             | 3.8 | 2008 | 6 | auto(l4)   | f | 18 | 28 | r | midsize    | 0.911938350716667 | 0.586246082603571 |
+| pontiac    | grand prix             | 5.3 | 2008 | 8 | auto(s4)   | f | 16 | 25 | p | midsize    |  1.02593064455625 |    0.656595612516 |
+| subaru     | forester awd           | 2.5 | 1999 | 4 | manual(m5) | 4 | 18 | 25 | r | suv        | 0.911938350716667 |    0.656595612516 |
+| subaru     | forester awd           | 2.5 | 1999 | 4 | auto(l4)   | 4 | 18 | 24 | r | suv        | 0.911938350716667 |   0.6839537630375 |
+| subaru     | forester awd           | 2.5 | 2008 | 4 | manual(m5) | 4 | 20 | 27 | r | suv        |    0.820744515645 | 0.607958900477778 |
+| subaru     | forester awd           | 2.5 | 2008 | 4 | manual(m5) | 4 | 19 | 25 | p | suv        | 0.863941595415789 |    0.656595612516 |
+| subaru     | forester awd           | 2.5 | 2008 | 4 | auto(l4)   | 4 | 20 | 26 | r | suv        |    0.820744515645 | 0.631341935111538 |
+| subaru     | forester awd           | 2.5 | 2008 | 4 | auto(l4)   | 4 | 18 | 23 | p | suv        | 0.911938350716667 | 0.713690883169565 |
+| subaru     | impreza awd            | 2.2 | 1999 | 4 | auto(l4)   | 4 | 21 | 26 | r | subcompact | 0.781661443471429 | 0.631341935111538 |
+| subaru     | impreza awd            | 2.2 | 1999 | 4 | manual(m5) | 4 | 19 | 26 | r | subcompact | 0.863941595415789 | 0.631341935111538 |
+| subaru     | impreza awd            | 2.5 | 1999 | 4 | manual(m5) | 4 | 19 | 26 | r | subcompact | 0.863941595415789 | 0.631341935111538 |
+| subaru     | impreza awd            | 2.5 | 1999 | 4 | auto(l4)   | 4 | 19 | 26 | r | subcompact | 0.863941595415789 | 0.631341935111538 |
+| subaru     | impreza awd            | 2.5 | 2008 | 4 | auto(s4)   | 4 | 20 | 25 | p | compact    |    0.820744515645 |    0.656595612516 |
+| subaru     | impreza awd            | 2.5 | 2008 | 4 | auto(s4)   | 4 | 20 | 27 | r | compact    |    0.820744515645 | 0.607958900477778 |
+| subaru     | impreza awd            | 2.5 | 2008 | 4 | manual(m5) | 4 | 19 | 25 | p | compact    | 0.863941595415789 |    0.656595612516 |
+| subaru     | impreza awd            | 2.5 | 2008 | 4 | manual(m5) | 4 | 20 | 27 | r | compact    |    0.820744515645 | 0.607958900477778 |
+| toyota     | 4runner 4wd            | 2.7 | 1999 | 4 | manual(m5) | 4 | 15 | 20 | r | suv        |     1.09432602086 |    0.820744515645 |
+| toyota     | 4runner 4wd            | 2.7 | 1999 | 4 | auto(l4)   | 4 | 16 | 20 | r | suv        |  1.02593064455625 |    0.820744515645 |
+| toyota     | 4runner 4wd            | 3.4 | 1999 | 6 | auto(l4)   | 4 | 15 | 19 | r | suv        |     1.09432602086 | 0.863941595415789 |
+| toyota     | 4runner 4wd            | 3.4 | 1999 | 6 | manual(m5) | 4 | 15 | 17 | r | suv        |     1.09432602086 | 0.965581783111765 |
+| toyota     | 4runner 4wd            |   4 | 2008 | 6 | auto(l5)   | 4 | 16 | 20 | r | suv        |  1.02593064455625 |    0.820744515645 |
+| toyota     | 4runner 4wd            | 4.7 | 2008 | 8 | auto(l5)   | 4 | 14 | 17 | r | suv        |  1.17249216520714 | 0.965581783111765 |
+| toyota     | camry                  | 2.2 | 1999 | 4 | manual(m5) | f | 21 | 29 | r | midsize    | 0.781661443471429 | 0.566030700444828 |
+| toyota     | camry                  | 2.2 | 1999 | 4 | auto(l4)   | f | 21 | 27 | r | midsize    | 0.781661443471429 | 0.607958900477778 |
+| toyota     | camry                  | 2.4 | 2008 | 4 | manual(m5) | f | 21 | 31 | r | midsize    | 0.781661443471429 |  0.52951259073871 |
+| toyota     | camry                  | 2.4 | 2008 | 4 | auto(l5)   | f | 21 | 31 | r | midsize    | 0.781661443471429 |  0.52951259073871 |
+| toyota     | camry                  |   3 | 1999 | 6 | auto(l4)   | f | 18 | 26 | r | midsize    | 0.911938350716667 | 0.631341935111538 |
+| toyota     | camry                  |   3 | 1999 | 6 | manual(m5) | f | 18 | 26 | r | midsize    | 0.911938350716667 | 0.631341935111538 |
+| toyota     | camry                  | 3.5 | 2008 | 6 | auto(s6)   | f | 19 | 28 | r | midsize    | 0.863941595415789 | 0.586246082603571 |
+| toyota     | camry solara           | 2.2 | 1999 | 4 | auto(l4)   | f | 21 | 27 | r | compact    | 0.781661443471429 | 0.607958900477778 |
+| toyota     | camry solara           | 2.2 | 1999 | 4 | manual(m5) | f | 21 | 29 | r | compact    | 0.781661443471429 | 0.566030700444828 |
+| toyota     | camry solara           | 2.4 | 2008 | 4 | manual(m5) | f | 21 | 31 | r | compact    | 0.781661443471429 |  0.52951259073871 |
+| toyota     | camry solara           | 2.4 | 2008 | 4 | auto(s5)   | f | 22 | 31 | r | compact    | 0.746131377859091 |  0.52951259073871 |
+| toyota     | camry solara           |   3 | 1999 | 6 | auto(l4)   | f | 18 | 26 | r | compact    | 0.911938350716667 | 0.631341935111538 |
+| toyota     | camry solara           |   3 | 1999 | 6 | manual(m5) | f | 18 | 26 | r | compact    | 0.911938350716667 | 0.631341935111538 |
+| toyota     | camry solara           | 3.3 | 2008 | 6 | auto(s5)   | f | 18 | 27 | r | compact    | 0.911938350716667 | 0.607958900477778 |
+| toyota     | corolla                | 1.8 | 1999 | 4 | auto(l3)   | f | 24 | 30 | r | compact    |   0.6839537630375 |     0.54716301043 |
+| toyota     | corolla                | 1.8 | 1999 | 4 | auto(l4)   | f | 24 | 33 | r | compact    |   0.6839537630375 | 0.497420918572727 |
+| toyota     | corolla                | 1.8 | 1999 | 4 | manual(m5) | f | 26 | 35 | r | compact    | 0.631341935111538 | 0.468996866082857 |
+| toyota     | corolla                | 1.8 | 2008 | 4 | manual(m5) | f | 28 | 37 | r | compact    | 0.586246082603571 | 0.443645684132432 |
+| toyota     | corolla                | 1.8 | 2008 | 4 | auto(l4)   | f | 26 | 35 | r | compact    | 0.631341935111538 | 0.468996866082857 |
+| toyota     | land cruiser wagon 4wd | 4.7 | 1999 | 8 | auto(l4)   | 4 | 11 | 15 | r | suv        |  1.49226275571818 |     1.09432602086 |
+| toyota     | land cruiser wagon 4wd | 5.7 | 2008 | 8 | auto(s6)   | 4 | 13 | 18 | r | suv        |  1.26268387022308 | 0.911938350716667 |
+| toyota     | toyota tacoma 4wd      | 2.7 | 1999 | 4 | manual(m5) | 4 | 15 | 20 | r | pickup     |     1.09432602086 |    0.820744515645 |
+| toyota     | toyota tacoma 4wd      | 2.7 | 1999 | 4 | auto(l4)   | 4 | 16 | 20 | r | pickup     |  1.02593064455625 |    0.820744515645 |
+| toyota     | toyota tacoma 4wd      | 2.7 | 2008 | 4 | manual(m5) | 4 | 17 | 22 | r | pickup     | 0.965581783111765 | 0.746131377859091 |
+| toyota     | toyota tacoma 4wd      | 3.4 | 1999 | 6 | manual(m5) | 4 | 15 | 17 | r | pickup     |     1.09432602086 | 0.965581783111765 |
+| toyota     | toyota tacoma 4wd      | 3.4 | 1999 | 6 | auto(l4)   | 4 | 15 | 19 | r | pickup     |     1.09432602086 | 0.863941595415789 |
+| toyota     | toyota tacoma 4wd      |   4 | 2008 | 6 | manual(m6) | 4 | 15 | 18 | r | pickup     |     1.09432602086 | 0.911938350716667 |
+| toyota     | toyota tacoma 4wd      |   4 | 2008 | 6 | auto(l5)   | 4 | 16 | 20 | r | pickup     |  1.02593064455625 |    0.820744515645 |
+| volkswagen | gti                    |   2 | 1999 | 4 | manual(m5) | f | 21 | 29 | r | compact    | 0.781661443471429 | 0.566030700444828 |
+| volkswagen | gti                    |   2 | 1999 | 4 | auto(l4)   | f | 19 | 26 | r | compact    | 0.863941595415789 | 0.631341935111538 |
+| volkswagen | gti                    |   2 | 2008 | 4 | manual(m6) | f | 21 | 29 | p | compact    | 0.781661443471429 | 0.566030700444828 |
+| volkswagen | gti                    |   2 | 2008 | 4 | auto(s6)   | f | 22 | 29 | p | compact    | 0.746131377859091 | 0.566030700444828 |
+| volkswagen | gti                    | 2.8 | 1999 | 6 | manual(m5) | f | 17 | 24 | r | compact    | 0.965581783111765 |   0.6839537630375 |
+| volkswagen | jetta                  | 1.9 | 1999 | 4 | manual(m5) | f | 33 | 44 | d | compact    | 0.497420918572727 | 0.373065688929545 |
+| volkswagen | jetta                  |   2 | 1999 | 4 | manual(m5) | f | 21 | 29 | r | compact    | 0.781661443471429 | 0.566030700444828 |
+| volkswagen | jetta                  |   2 | 1999 | 4 | auto(l4)   | f | 19 | 26 | r | compact    | 0.863941595415789 | 0.631341935111538 |
+| volkswagen | jetta                  |   2 | 2008 | 4 | auto(s6)   | f | 22 | 29 | p | compact    | 0.746131377859091 | 0.566030700444828 |
+| volkswagen | jetta                  |   2 | 2008 | 4 | manual(m6) | f | 21 | 29 | p | compact    | 0.781661443471429 | 0.566030700444828 |
+| volkswagen | jetta                  | 2.5 | 2008 | 5 | auto(s6)   | f | 21 | 29 | r | compact    | 0.781661443471429 | 0.566030700444828 |
+| volkswagen | jetta                  | 2.5 | 2008 | 5 | manual(m5) | f | 21 | 29 | r | compact    | 0.781661443471429 | 0.566030700444828 |
+| volkswagen | jetta                  | 2.8 | 1999 | 6 | auto(l4)   | f | 16 | 23 | r | compact    |  1.02593064455625 | 0.713690883169565 |
+| volkswagen | jetta                  | 2.8 | 1999 | 6 | manual(m5) | f | 17 | 24 | r | compact    | 0.965581783111765 |   0.6839537630375 |
+| volkswagen | new beetle             | 1.9 | 1999 | 4 | manual(m5) | f | 35 | 44 | d | subcompact | 0.468996866082857 | 0.373065688929545 |
+| volkswagen | new beetle             | 1.9 | 1999 | 4 | auto(l4)   | f | 29 | 41 | d | subcompact | 0.566030700444828 | 0.400363178363415 |
+| volkswagen | new beetle             |   2 | 1999 | 4 | manual(m5) | f | 21 | 29 | r | subcompact | 0.781661443471429 | 0.566030700444828 |
+| volkswagen | new beetle             |   2 | 1999 | 4 | auto(l4)   | f | 19 | 26 | r | subcompact | 0.863941595415789 | 0.631341935111538 |
+| volkswagen | new beetle             | 2.5 | 2008 | 5 | manual(m5) | f | 20 | 28 | r | subcompact |    0.820744515645 | 0.586246082603571 |
+| volkswagen | new beetle             | 2.5 | 2008 | 5 | auto(s6)   | f | 20 | 29 | r | subcompact |    0.820744515645 | 0.566030700444828 |
+| volkswagen | passat                 | 1.8 | 1999 | 4 | manual(m5) | f | 21 | 29 | p | midsize    | 0.781661443471429 | 0.566030700444828 |
+| volkswagen | passat                 | 1.8 | 1999 | 4 | auto(l5)   | f | 18 | 29 | p | midsize    | 0.911938350716667 | 0.566030700444828 |
+| volkswagen | passat                 |   2 | 2008 | 4 | auto(s6)   | f | 19 | 28 | p | midsize    | 0.863941595415789 | 0.586246082603571 |
+| volkswagen | passat                 |   2 | 2008 | 4 | manual(m6) | f | 21 | 29 | p | midsize    | 0.781661443471429 | 0.566030700444828 |
+| volkswagen | passat                 | 2.8 | 1999 | 6 | auto(l5)   | f | 16 | 26 | p | midsize    |  1.02593064455625 | 0.631341935111538 |
+| volkswagen | passat                 | 2.8 | 1999 | 6 | manual(m5) | f | 18 | 26 | p | midsize    | 0.911938350716667 | 0.631341935111538 |
+| volkswagen | passat                 | 3.6 | 2008 | 6 | auto(s6)   | f | 17 | 26 | p | midsize    | 0.965581783111765 | 0.631341935111538 |
+
+4) [@4] Which manufacturer has the most models in this dataset? Which model
+   has the most variations? Does your answer change if you remove the
+   redundant specification of drive train (e.g. “pathfinder 4wd”, “a4
+   quattro”) from the model name?
+
+#+begin_src  R :session *R*  :results output
+mpg %>% group_by(manufacturer) %>% summarize(count=n())
+#+end_src
+
+#+RESULTS:
+#+begin_example
+`summarise()` ungrouping output (override with `.groups` argument)
+# A tibble: 15 x 2
+   manufacturer count
+   <
+       <int>
+ 1 audi            18
+ 2 chevrolet       19
+ 3 dodge           37
+ 4 ford            25
+ 5 honda            9
+ 6 hyundai         14
+ 7 jeep             8
+ 8 land rover       4
+ 9 lincoln          3
+10 mercury          4
+11 nissan          13
+12 pontiac          5
+13 subaru          14
+14 toyota          34
+15 volkswagen      27
+#+end_example
+
+Dodge has most models
+
+** 2.3.1
+
+1) [@\1]    How would you describe the relationship between cty and hwy? Do
+   you have any concerns about drawing conclusions from that plot?
+
+#+begin_src R :exports both :results graphics file :file graphics/ggplot2-chap2.3.1.1.png
+ggplot(mpg, aes(cty, hwy)) + geom_point()
+#+end_src
+
+#+RESULTS:
+[[file:graphics/ggplot2-chap2.3.1.1.png]]
+
+There is a strong positive correlation between the two quantities.  But
+the data points seem to be regularly spaced, so it appears that the
+data has been rounded to a specific degree.  Looking at the data, I
+see that all values are integers, so it is clear why the scatter plot
+is so regular.  It also means that some points could be doubled or
+even tripled or more.
+
+2) [@2]    What does ggplot(mpg, aes(model, manufacturer)) + geom_point()
+   show? Is it useful? How could you modify the data to make it more
+   informative?
+
+#+begin_src R :session *R* :exports both :results graphics file :file graphics/ggplot2-chap2.3.1.2.png
+ggplot(mpg, aes(model, manufacturer)) + geom_point()
+#+end_src
+
+#+RESULTS:
+[[file:graphics/ggplot2-chap2.3.1.2.png]]
+
+This does not give much good information. It's just an array of
+alphabetized model names, versus who the manufacturer is.  It would be
+improved with better labeling at the bottom, so it doesn't overwrite,
+needs rotated model names.
+
+3) [@3]    Describe the data, aesthetic mappings and layers used for each of the following plots. You’ll need to guess a little because you haven’t seen all the datasets and functions yet, but use your common sense! See if you can predict what the plot will look like before running the code.
+-        ggplot(mpg, aes(cty, hwy)) + geom_point()
+Scatter Plot
+-        ggplot(diamonds, aes(carat, price)) + geom_point()
+Messy scatter plot
+-        ggplot(economics, aes(date, unemploy)) + geom_line()
+Time series line
+-        ggplot(mpg, aes(cty)) + geom_histogram()
+Count of number of models with given city mileage per gallon.
+
+** 2.4.1
+
+1) [@1]  Experiment with the colour, shape and size aesthetics. What
+   happens when you map them to continuous values? What about
+   categorical values? What happens when you use more than one
+   aesthetic in a plot?
+
+#+begin_src R :session *R* :exports both :results graphics file :file graphics/ggplot2-chap2.4.1,1a.png
+ggplot(mpg, aes(displ, cty, colour = displ)) +   geom_point()
+#+end_src
+
+#+RESULTS:
+[[file:graphics/ggplot2-chap2.4.1,1a.png]]
+
+The color scale is not broad enough, from blue to dark blue or black,
+so it is hard to distinguish any trends.
+
+#+begin_src R :session *R* :exports both :results graphics file :file graphics/ggplot2-chap2.4.1.1b.png
+ggplot(mpg, aes(displ, cty, size = displ)) +   geom_point()
+#+end_src
+
+#+RESULTS:
+[[file:graphics/ggplot2-chap2.4.1.1b.png]]
+
+#+begin_src R :session *R* :exports both :results graphics file :file graphics/ggplot2-chap2.4.1.1c.png
+ggplot(mpg, aes(displ, cty, shape = displ)) +   geom_point()
+#+end_src
+
+#+RESULTS:
+
+Error: A continuous variable can not be mapped to shape
+
+The size scale is not broad enough
+so it is hard to distinguish any trends.  The lack of color does not
+help either.
+
+2) [@2]  What happens if you map a continuous variable to shape? Why? What
+   happens if you map trans to shape? Why?
+
+Mapping a continuous variable to a shape gives an error.
+Error: A continuous variable can not be mapped to shape
+
+#+begin_src R :session *R* :exports both :results graphics file :file graphics/ggplot2-chap2.4.2.2.png
+ggplot(mpg, aes(displ, cty, shape = displ)) +   geom_point()
+#+end_src
+
+#+RESULTS:
+
+Too many categories, and the shapes are hard to distinguish here.
+
+3) [@3]  How is drive train related to fuel economy? How is drive train
+   related to engine size and class?
+
+#+begin_src R :session *R* :exports both :results graphics file :file graphics/ggplot2-chap2.4.1.3.png
+ggplot(mpg, aes(displ, cty, color = drv)) +   geom_point()
+#+end_src
+
+#+RESULTS:
+[[file:graphics/ggplot2-chap2.4.1.3.png]]
+
+Dive train is related to fuel economy, "f" or front wheel drive is
+generally best fuel economy, 4-wheel drive and rear wheel drive are
+comparable in fuel economy, with 4-wheel drive having a wider range of
+values.
+
+** 2.5.1
+
+1) [@1] What happens if you try to facet by a continuous variable like hwy?
+   What about cyl? What’s the key difference?
+
+#+begin_src R :exports both :results graphics file :file graphics/ggplot2-chap2.5.1.1a.png
+ggplot(mpg, aes(displ, cty, color = drv)) +   geom_point() + facet_wrap(~hwy)
+#+end_src
+
+#+RESULTS:
+[[file:graphics/ggplot2-chap2.5.1.1a.png]]
+
+Get many facets here each with few points.  Although hwy is a continuous value, it
+appears here as integer values, so ~facet_wrap~ can actually handle
+it.
+
+#+begin_src R :exports both :results graphics file :file graphics/ggplot2-chap2.5.1.1b.png
+ggplot(mpg, aes(displ, cty, color = drv)) +   geom_point() + facet_wrap(~cyl)
+#+end_src
+
+The key difference seems to be the number of values of the faceting variable.
+
+#+RESULTS:
+[[file:graphics/ggplot2-chap2.5.1.1b.png]]
+
+2) [@2] Use faceting to explore the 3-way relationship between fuel
+   economy, engine size, and number of cylinders. How does faceting by
+   number of cylinders change your assessment of the relationship
+   between engine size and fuel economy?
+
+#+begin_src R :exports both :results graphics file :file graphics/ggplot2-chap2.5.1.2.png
+ggplot(mpg, aes(displ, cty, color = drv)) +   geom_point() + facet_wrap(~cyl)
+#+end_src
+
+#+RESULTS:
+[[file:graphics/ggplot2-chap2.5.1.2.png]]
+
+Across the factors of cylinders, fuel economy seems to depend on
+cylinders somewhat.  Because of the bunching of the points for 6 and 8
+cylinders, it appears that displacement does not greatly affect the
+fuel economy for those classes.  However for 4 cylinders,
+displacement does not affect economy much, but some other factor does
+affect
+
+3) [@3] Read the documentation for facet_wrap(). What arguments can you use
+   to control how many rows and columns appear in the output?
+
+~nrow~, ~ncol~: Number of rows and columns.
+
+4) [@4] What does the scales argument to facet_wrap() do? When might you
+   use it?
+
+  scales: Should scales be fixed (‘"fixed"’, the default), free
+          (‘"free"’), or free in one dimension (‘"free_x"’,
+          ‘"free_y"’)?
+
+** 2.6.6
+1) [@1]    One challenge with ggplot(mpg, aes(class, hwy)) + geom_boxplot()
+   is that the ordering of class is alphabetical, which is not
+   terribly useful. How could you change the factor levels to be more
+   informative?
+
+Probably the most automatic is to use the ~forecats~ library function
+~fact_reorder()~.  See examples at
+https://www.r-graph-gallery.com/267-reorder-a-variable-in-ggplot2.html
+
+A little more hands-on is to use ~mutate~ to create a new variable or
+reorder an existing one.  Again, see examples at
+https://www.r-graph-gallery.com/267-reorder-a-variable-in-ggplot2.html
+
+2) [@2] Rather than reordering the factor by hand, you can do it
+   automatically based on the data: ggplot(mpg, aes(reorder(class,
+   hwy), hwy)) + geom_boxplot(). What does reorder() do? Read the
+   documentation.
+
+From the documentation:
+‘reorder’ is a generic function.  The ‘"default"’ method treats
+     its first argument as a categorical variable, and reorders its
+     levels based on the values of a second variable, usually numeric.
+reorder is in the stats library
+
+3) [@3] Explore the distribution of the carat variable in the diamonds
+   dataset. What binwidth reveals the most interesting patterns?
+
+This exercise is basically repeated in Exercise 5.4.1.1.  The answer
+there is:
+ The default binwidth seems to give too coarse a distribution but there
+ may be something interesting happening near 1 and 2
+
+ A binwidth= 0.1 starts to reveal a mix of decaying exponential
+ distributions at 1/2, 1, 2 maybe 3
+
+ Finally, with a binwidth of 0.005, some clear trends appear with a mix
+ of decaying exponentials appearing at about multiples of  0.25 carats.
+
+ #+begin_src R :session *R* :exports both :results graphics file :file graphics/ggplot2-chap2.6.6.3.png
+   ggplot(diamonds, aes(carat) ) +
+       geom_histogram(binwidth= 0.005) +
+       xlim(0,2.5)
+ #+end_src
+
+ #+RESULTS:
+ [[file:graphics/ggplot2-chap2.6.6.3.png]]
+
+4) [@4] Explore the distribution of the price variable in the diamonds
+   data. How does the distribution vary by cut?
+
+This exercise is basically repeated in Exercise 16.7.1.  The answer
+there is:
+ The default binwidth seems to give too coarse a distribution but there
+ may be something interesting happening near 1 and 2
+
+#+begin_src R :session *R* :exports both :results graphics file :file graphics/ggplot2-chap2.6.6.4.png
+  ggplot(diamonds, aes(carat, price)) +
+    geom_point() +
+    facet_wrap( ~cut)
+#+end_src
+
+#+RESULTS:
+[[file:graphics/ggplot2-chap2.6.6.4png]]
+
+5) [@5] You now know (at least) three ways to compare the distributions
+   of subgroups: geom_violin(), geom_freqpoly() and the colour
+   aesthetic, or geom_histogram() and faceting. What are the strengths
+   and weaknesses of each approach? What other approaches could you
+   try?
+
+geom_violin():  Strength:  Ability to compare more than a few
+distributions.
+Weakness:  Hard to distinguish details on the small plots.
+
+geom_freqpoly():  Strength:  Matches the common visualization of a
+distribution as a frequency on the vertical versus the variable on the
+horizontal axis.
+Weakness: The overlapping distributions sometimes hide each other and
+obscure details.  
+
+geom_histogram():  Strength:  Details are revealed for each
+subgroup. Weakness: hard to compare one subgroup to another.
+
+6) [@6] Read the documentation for geom_bar(). What does the weight
+   aesthetic do?
+
+There are two types of bar charts: geom_bar() and
+geom_col(). geom_bar() makes the height of the bar proportional to the
+number of cases in each group (or if the weight aesthetic is supplied,
+the sum of the weights).
+
+7) [@7] Using the techniques already discussed in this chapter, come up
+   with three ways to visualise a 2d categorical distribution. Try
+   them out by visualising the distribution of model and manufacturer,
+   trans and class, and cyl and trans.
+
+   
+The following is a start for trans and class:
+#+begin_src R :session *R* :exports both :results graphics file :file graphics/ggplot2-chap2.6.6.7.png
+ggplot( mpg, aes(x = trans)) + geom_bar(aes(fill=class))
+#+end_src
+
+#+RESULTS:
+[[file:graphics/ggplot2-chap2.6.6.7.png]]

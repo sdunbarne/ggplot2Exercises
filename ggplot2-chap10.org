@@ -1,0 +1,181 @@
+#+begin_comment
+#+PROPERTY: header-args :session *R* :results both
+#+end_comment
+
+* Chapter 10 -- Position Scales and axes
+  
+#+begin_src R :session *R*
+library(ggplot2)
+options(crayon.enabled = FALSE) # see https://github.com/tidyverse/tibble/issues/395
+#+end_src
+
+#+RESULTS:
+
+** 10.1.4 Exercises
+1) [@1] The following code creates two plots of the mpg dataset. Modify
+    the code so that the legend and axes match, without using
+    faceting!
+
+#+begin_src :exports code
+    fwd <- subset(mpg, drv == "f")
+    rwd <- subset(mpg, drv == "r")
+
+    ggplot(fwd, aes(displ, hwy, colour = class)) + geom_point()
+    ggplot(rwd, aes(displ, hwy, colour = class)) + geom_point()
+#+end_src
+
+ #+begin_src R :session *R* :exports both :results graphics file :file graphics/ggplot2-chap10.1.4.2.png
+   fwd <- subset(mpg, drv == "f")
+   rwd <- subset(mpg, drv == "r")
+   ggplot(fwd, aes(displ, hwy, colour = class)) +
+       geom_point() +
+       xlim(2,7) + ylim(15, 45) +
+       scale_color_discrete(limits =
+	c("compact", "midsize", "minivan", "subcompact", "2seater", "suv"))
+   ggplot(rwd, aes(displ, hwy, colour = class)) +
+       geom_point() +
+       xlim(2,7) + ylim(15, 45) +
+       scale_color_discrete(limits =
+	c("compact", "midsize", "minivan", "subcompact", "2seater", "suv"))
+ #+end_src
+
+ #+RESULTS:
+
+
+2) [@2] What happens if you add two ~xlim()~ calls to the same plot? Why?
+
+ #+begin_src R :session *R* :exports both :results graphics file :file graphics/ggplot2-chap10.1.4.2.png
+   ggplot(rwd, aes(displ, hwy, colour = class)) +
+       geom_point() +
+       xlim(2,7) + xlim(5, 6)
+ #+end_src
+
+    Get the following error message:
+#+begin_quote
+    Scale for 'x' is already present. Adding another scale for 'x', which will
+    replace the existing scale.
+    Warning message:
+    Removed 12 rows containing missing values (geom_point). 
+#+end_quote
+
+    The second scale is used, replaces the first scale.
+
+
+3) [@3] What does ~scale_x_continuous(limits = c(NA, NA))~ do?
+
+ #+begin_src R :session *R* :exports code
+   ggplot(fwd, aes(displ, hwy, colour = class)) +
+       geom_point() +
+       xlim(NA, NA)
+ #+end_src
+   gives the following error message (which I don't find very
+   helpful!)
+#+begin_quote
+   Error in UseMethod("limits") : 
+   no applicable method for 'limits' applied to an object of class "logical"
+#+end_quote
+
+   However the following works!
+   #+begin_src R :session *R* :exports both :results graphics file :file graphics/ggplot2-chap10.1.4.3.png
+     ggplot(fwd, aes(displ, hwy, colour = class)) +
+	 geom_point() +
+	 xlim(NA, 7)
+   #+end_src
+  
+4) [@4] What does ~expand_limits()~ do and how does it work? Read the source
+    code.
+
+    Sometimes you may want to ensure limits include a single value, for
+    all panels or all plots. This function ~expand_limit()~ is a thin wrapper around
+    ~geom_blank()~ that makes it easy to add such values.  This function
+    seems to me to do essentially the same this as ~xlim()~ and ~ylim()~.
+    This function Can be used to quickly set the intercept of x and y axes at (0,0)
+    and to expand the limits of x and y axes.
+
+    The source code is:
+    #+begin_src R :exports code
+ {
+     data <- list(...)
+     data_dfs <- vapply(data, is.data.frame, logical(1))
+     data <- do.call(c, c(list(data[!data_dfs]), data[data_dfs]))
+     n_rows <- max(vapply(data, length, integer(1)))
+     data <- lapply(data, rep, length.out = n_rows)
+     data <- new_data_frame(data)
+     geom_blank(aes_all(names(data)), data, inherit.aes = FALSE)
+ }
+    #+end_src
+
+ It's not clear to me what all this does, but it looks like the
+ function increases the data and adds a new invisible or blank geom to
+ the plot.
+
+
+** 10.1.8 Exercises
+
+1) [@1]   Recreate the following graphic:
+     Adjust the y axis label so that the parentheses are the right size.
+
+     The following does it, but without the stacked fraction.  It is not
+     clear how to format this, but the following might help.
+     https://www.benjaminackerman.com/post/2019-03-08-equation_labels/
+     and
+     https://astrostatistics.psu.edu/su07/R/html/grDevices/html/plotmath.html
+     See also
+     https://stackoverflow.com/questions/40994357/notation-for-fractions-divides-by-or-over-in-r-and-ggplot2
+     It looks like I need expression(),  see question 3 below.
+
+#+begin_src R :session *R* :exports both :results graphics file :file graphics/ggplot2-chap10.1.8.1.png
+  base  <-  ggplot(mpg, aes(displ, hwy)) +
+      geom_point()
+  base +
+      xlab("Displacement") +
+      ylab("Highway (miles/gallon)")
+#+end_src
+
+2) [@2]   List the three different types of object you can supply to the
+     breaks argument. How do breaks and labels differ?
+
+     From the online documentation at
+     https://ggplot2.tidyverse.org/reference/scale_continuous.html
+     'breaks' can be set to one of:
+     - NULL for no breaks
+     - waiver() for the default breaks computed by the transformation object
+     - A numeric vector of positions
+     - A function that takes the limits as input and returns breaks as
+       output (e.g., a function returned by scales::extended_breaks())
+
+     'labels' can be set to one of:
+     - NULL for no labels
+     - waiver() for the default labels computed by the transformation object
+     - A character vector giving labels (must be same length as breaks)
+     - A function that takes the breaks as input and returns labels as
+       output
+
+     The overall difference seems to be that breaks are numeric and
+     labels are characters.
+  
+3) [@3]  What label function allows you to create mathematical expressions?
+    What label function converts 1 to 1st, 2 to 2nd, and so on?
+
+    From online documentation
+    https://ggplot2.tidyverse.org/reference/label_bquote.html
+
+    #+begin_quote
+    ~label_bquote()~ offers a flexible way of labeling facet rows or
+    columns with plotmath expressions. Backquoted variables will be
+    replaced with their value in the facet.
+    #+end_quote
+
+    But this seems to be incomplete since the only examples appear to be
+    single Greek letters, not what I consider to be mathematical
+    expressions.
+
+    The expression function seems to be a better alternative,
+    see
+    https://stackoverflow.com/questions/40994357/notation-for-fractions-divides-by-or-over-in-r-and-ggplot2
+
+    To convert 1 to 1st, 2 to 2nd, etc, looks like I want to use the
+    special package toOrdinal, see
+    https://rdrr.io/cran/toOrdinal/man/toOrdinal.html
+    and
+    https://cran.r-project.org/web/packages/toOrdinal/toOrdinal.pdf
