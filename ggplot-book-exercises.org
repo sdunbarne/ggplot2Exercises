@@ -55,6 +55,7 @@ much need (yet) for the advanced methods.
 #+INCLUDE: "ggplot2-chap10.org" :minlevel 1
 #+INCLUDE: "ggplot2-chap11.org" :minlevel 1
 
+#+begin_comment
 DO NOT INLCUDE, no answers
 #+INCLUDE: "ggplot2-chap13.org" :minlevel 1
 #+end_comment

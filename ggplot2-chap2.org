@@ -10,7 +10,7 @@ options(crayon.enabled = FALSE) # see https://github.com/tidyverse/tibble/issues
 #+RESULTS:
 : FALSE
 
-** 2.2.1
+** 2.2.1 Exercises
 
 1) List five functions that you could use to get more information
    about the mpg dataset.
@@ -318,9 +318,9 @@ mpg %>% group_by(manufacturer) %>% summarize(count=n())
 
 Dodge has most models
 
-** 2.3.1
+** 2.3.1 Exercises
 
-1) [@\1]    How would you describe the relationship between cty and hwy? Do
+1) [@1]    How would you describe the relationship between cty and hwy? Do
    you have any concerns about drawing conclusions from that plot?
 
 #+begin_src R :exports both :results graphics file :file graphics/ggplot2-chap2.3.1.1.png
@@ -337,7 +337,7 @@ see that all values are integers, so it is clear why the scatter plot
 is so regular.  It also means that some points could be doubled or
 even tripled or more.
 
-2) [@2]    What does ggplot(mpg, aes(model, manufacturer)) + geom_point()
+2) [@2]    What does ~ggplot(mpg, aes(model, manufacturer)) + geom_point()~
    show? Is it useful? How could you modify the data to make it more
    informative?
 
@@ -353,17 +353,21 @@ alphabetized model names, versus who the manufacturer is.  It would be
 improved with better labeling at the bottom, so it doesn't overwrite,
 needs rotated model names.
 
-3) [@3]    Describe the data, aesthetic mappings and layers used for each of the following plots. You’ll need to guess a little because you haven’t seen all the datasets and functions yet, but use your common sense! See if you can predict what the plot will look like before running the code.
--        ggplot(mpg, aes(cty, hwy)) + geom_point()
+3) [@3]    Describe the data, aesthetic mappings and layers used for
+   each of the following plots. You’ll need to guess a little because
+   you haven’t seen all the datasets and functions yet, but use your
+   common sense! See if you can predict what the plot will look like
+   before running the code.
+-        ~ggplot(mpg, aes(cty, hwy)) + geom_point()~
 Scatter Plot
--        ggplot(diamonds, aes(carat, price)) + geom_point()
+-        ~ggplot(diamonds, aes(carat, price)) + geom_point()~
 Messy scatter plot
--        ggplot(economics, aes(date, unemploy)) + geom_line()
+-        ~ggplot(economics, aes(date, unemploy)) + geom_line()~
 Time series line
--        ggplot(mpg, aes(cty)) + geom_histogram()
+-        ~ggplot(mpg, aes(cty)) + geom_histogram()~
 Count of number of models with given city mileage per gallon.
 
-** 2.4.1
+** 2.4.1 Exercises
 
 1) [@1]  Experiment with the colour, shape and size aesthetics. What
    happens when you map them to continuous values? What about
@@ -392,8 +396,9 @@ ggplot(mpg, aes(displ, cty, shape = displ)) +   geom_point()
 #+end_src
 
 #+RESULTS:
-
+#+begin_quote
 Error: A continuous variable can not be mapped to shape
+#+end_quote
 
 The size scale is not broad enough
 so it is hard to distinguish any trends.  The lack of color does not
@@ -403,7 +408,9 @@ help either.
    happens if you map trans to shape? Why?
 
 Mapping a continuous variable to a shape gives an error.
+#+begin_quote
 Error: A continuous variable can not be mapped to shape
+#+end_quote
 
 #+begin_src R :session *R* :exports both :results graphics file :file graphics/ggplot2-chap2.4.2.2.png
 ggplot(mpg, aes(displ, cty, shape = displ)) +   geom_point()
@@ -428,7 +435,7 @@ generally best fuel economy, 4-wheel drive and rear wheel drive are
 comparable in fuel economy, with 4-wheel drive having a wider range of
 values.
 
-** 2.5.1
+** 2.5.1 Exercises
 
 1) [@1] What happens if you try to facet by a continuous variable like hwy?
    What about cyl? What’s the key difference?
@@ -472,25 +479,27 @@ fuel economy for those classes.  However for 4 cylinders,
 displacement does not affect economy much, but some other factor does
 affect
 
-3) [@3] Read the documentation for facet_wrap(). What arguments can you use
+3) [@3] Read the documentation for ~facet_wrap()~. What arguments can you use
    to control how many rows and columns appear in the output?
 
 ~nrow~, ~ncol~: Number of rows and columns.
 
-4) [@4] What does the scales argument to facet_wrap() do? When might you
+4) [@4] What does the scales argument to ~facet_wrap()~ do? When might you
    use it?
 
+#+begin_quote
   scales: Should scales be fixed (‘"fixed"’, the default), free
-          (‘"free"’), or free in one dimension (‘"free_x"’,
-          ‘"free_y"’)?
+          (‘"free"’), or free in one dimension (‘"~free_x~"’,
+          ‘"~free_y~"’)?
+#+end_quote
 
-** 2.6.6
+** 2.6.6 Exercises
 1) [@1]    One challenge with ggplot(mpg, aes(class, hwy)) + geom_boxplot()
    is that the ordering of class is alphabetical, which is not
    terribly useful. How could you change the factor levels to be more
    informative?
 
-Probably the most automatic is to use the ~forecats~ library function
+Probably the most automatic is to use the ~forcats~ library function
 ~fact_reorder()~.  See examples at
 https://www.r-graph-gallery.com/267-reorder-a-variable-in-ggplot2.html
 
@@ -499,15 +508,17 @@ reorder an existing one.  Again, see examples at
 https://www.r-graph-gallery.com/267-reorder-a-variable-in-ggplot2.html
 
 2) [@2] Rather than reordering the factor by hand, you can do it
-   automatically based on the data: ggplot(mpg, aes(reorder(class,
-   hwy), hwy)) + geom_boxplot(). What does reorder() do? Read the
+   automatically based on the data: ~ggplot(mpg, aes(reorder(class,
+   hwy), hwy)) + geom_boxplot()~. What does ~reorder()~ do? Read the
    documentation.
 
 From the documentation:
+#+begin_quote
 ‘reorder’ is a generic function.  The ‘"default"’ method treats
      its first argument as a categorical variable, and reorders its
      levels based on the values of a second variable, usually numeric.
 reorder is in the stats library
+#+end_quote
 
 3) [@3] Explore the distribution of the carat variable in the diamonds
    dataset. What binwidth reveals the most interesting patterns?
@@ -550,29 +561,29 @@ there is:
 [[file:graphics/ggplot2-chap2.6.6.4png]]
 
 5) [@5] You now know (at least) three ways to compare the distributions
-   of subgroups: geom_violin(), geom_freqpoly() and the colour
-   aesthetic, or geom_histogram() and faceting. What are the strengths
+   of subgroups: ~geom_violin()~, ~geom_freqpoly()~ and the colour
+   aesthetic, or ~geom_histogram()~ and faceting. What are the strengths
    and weaknesses of each approach? What other approaches could you
    try?
 
-geom_violin():  Strength:  Ability to compare more than a few
+- ~geom_violin()~:  Strength:  Ability to compare more than a few
 distributions.
 Weakness:  Hard to distinguish details on the small plots.
 
-geom_freqpoly():  Strength:  Matches the common visualization of a
+- ~geom_freqpoly()~:  Strength:  Matches the common visualization of a
 distribution as a frequency on the vertical versus the variable on the
 horizontal axis.
 Weakness: The overlapping distributions sometimes hide each other and
 obscure details.  
 
-geom_histogram():  Strength:  Details are revealed for each
+- ~geom_histogram()~:  Strength:  Details are revealed for each
 subgroup. Weakness: hard to compare one subgroup to another.
 
-6) [@6] Read the documentation for geom_bar(). What does the weight
+6) [@6] Read the documentation for ~geom_bar()~. What does the weight
    aesthetic do?
 
-There are two types of bar charts: geom_bar() and
-geom_col(). geom_bar() makes the height of the bar proportional to the
+There are two types of bar charts: ~geom_bar()~ and
+~geom_col()~. ~geom_bar()~ makes the height of the bar proportional to the
 number of cases in each group (or if the weight aesthetic is supplied,
 the sum of the weights).
 
