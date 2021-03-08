@@ -99,7 +99,7 @@ options(crayon.enabled = FALSE) # see https://github.com/tidyverse/tibble/issues
 
  #+RESULTS:
  
-4) [@4]   Systematically explore the effects of hjust when you have a
+4) [@4]   Systematically explore the effects of ~hjust~ when you have a
     multiline title. Why doesn’t ~vjust~ do anything?
 
     First, default is left justified.

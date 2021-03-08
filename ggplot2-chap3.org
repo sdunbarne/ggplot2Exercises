@@ -29,7 +29,7 @@ geom_bar(width = 1, stat = "identity")
 2) [@2]  What’s the difference between ~geom_path()~ and ~geom_polygon()~?
    What’s the difference between ~geom_path()~ and ~geom_line()~?
 
-Polygons are very similar to paths (as drawn by ‘~geom_path()~’) except
+Polygons are very similar to paths (as drawn by ~geom_path()~) except
 that the start and end points are connected and the inside is coloured
 by ‘fill’. The ‘group’ aesthetic determines which cases are connected
 together into a polygon. From R 3.6 and onwards it is possible to draw

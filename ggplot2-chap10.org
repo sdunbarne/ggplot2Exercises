@@ -55,7 +55,7 @@ options(crayon.enabled = FALSE) # see https://github.com/tidyverse/tibble/issues
     Scale for 'x' is already present. Adding another scale for 'x', which will
     replace the existing scale.
     Warning message:
-    Removed 12 rows containing missing values (geom_point). 
+    Removed 12 rows containing missing values '(geom_point)'. 
 #+end_quote
 
     The second scale is used, replaces the first scale.
@@ -89,7 +89,7 @@ options(crayon.enabled = FALSE) # see https://github.com/tidyverse/tibble/issues
     all panels or all plots. This function ~expand_limit()~ is a thin wrapper around
     ~geom_blank()~ that makes it easy to add such values.  This function
     seems to me to do essentially the same this as ~xlim()~ and ~ylim()~.
-    This function Can be used to quickly set the intercept of x and y axes at (0,0)
+    This function can be used to quickly set the intercept of x and y axes at (0,0)
     and to expand the limits of x and y axes.
 
     The source code is:
@@ -122,7 +122,7 @@ options(crayon.enabled = FALSE) # see https://github.com/tidyverse/tibble/issues
      https://astrostatistics.psu.edu/su07/R/html/grDevices/html/plotmath.html
      See also
      https://stackoverflow.com/questions/40994357/notation-for-fractions-divides-by-or-over-in-r-and-ggplot2
-     It looks like I need expression(),  see question 3 below.
+     It looks like I need ~expression()~,  see question 3 below.
 
 #+begin_src R :session *R* :exports both :results graphics file :file graphics/ggplot2-chap10.1.8.1.png
   base  <-  ggplot(mpg, aes(displ, hwy)) +
@@ -139,14 +139,14 @@ options(crayon.enabled = FALSE) # see https://github.com/tidyverse/tibble/issues
      https://ggplot2.tidyverse.org/reference/scale_continuous.html
      'breaks' can be set to one of:
      - NULL for no breaks
-     - waiver() for the default breaks computed by the transformation object
+     - ~waiver()~ for the default breaks computed by the transformation object
      - A numeric vector of positions
      - A function that takes the limits as input and returns breaks as
-       output (e.g., a function returned by scales::extended_breaks())
+       output (e.g., a function returned by ~scales::extended_breaks()~)
 
      'labels' can be set to one of:
      - NULL for no labels
-     - waiver() for the default labels computed by the transformation object
+     - ~waiver()~ for the default labels computed by the transformation object
      - A character vector giving labels (must be same length as breaks)
      - A function that takes the breaks as input and returns labels as
        output
@@ -170,7 +170,7 @@ options(crayon.enabled = FALSE) # see https://github.com/tidyverse/tibble/issues
     single Greek letters, not what I consider to be mathematical
     expressions.
 
-    The expression function seems to be a better alternative,
+    The ~expression()~ function seems to be a better alternative,
     see
     https://stackoverflow.com/questions/40994357/notation-for-fractions-divides-by-or-over-in-r-and-ggplot2
 

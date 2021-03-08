@@ -15,7 +15,7 @@ options(crayon.enabled = FALSE) # see https://github.com/tidyverse/tibble/issues
    and carat. Try faceting by cut and grouping by carat. Try faceting
    by carat and grouping by cut. Which do you prefer?
 
-#+begin_src R :session *R* :exports both :results graphics file :file graphics/ggplot2-chap17.7.1.1png
+#+begin_src R :session *R* :exports both :results graphics file :file graphics/ggplot2-chap17.7.1.1.png
   ggplot(diamonds, aes(carat, price)) +
     geom_point() +
     facet_wrap( ~cut)
